@@ -1784,9 +1784,9 @@ export namespace assuredworkloads_v1beta1 {
   export interface Params$Resource$Organizations$Locations$Workloads$Analyzeworkloadmove
     extends StandardParameters {
     /**
-     * Optional. Indicates if all child assets of the source resource should also be analyzed in addition to the source.
+     * Optional. List of asset types to be analyzed,including and under the source resource. If empty, all assets are analyzed. The complete list of asset types is available [here](https://cloud.google.com/asset-inventory/docs/supported-asset-types#searchable_asset_types)
      */
-    analyzeChildAssets?: boolean;
+    assetTypes?: string[];
     /**
      * Optional. Page size. If a value is not specified, the default value of 10 is used.
      */
