@@ -2367,11 +2367,11 @@ export namespace contentwarehouse_v1 {
     plusPageInfo?: Schema$AppsPeopleOzExternalMergedpeopleapiPlusPageInfo[];
     posixAccount?: Schema$AppsPeopleOzExternalMergedpeopleapiPosixAccount[];
     /**
-     * DEPRECATED. (go/people-api-concepts#repeated): Use person.profile_url_repeated instead. Access to this field is restricted to a set of legacy clients. This is a Google+-only field. See go/fbs-g+-deprecation. NOTE: `Person.profile_url` is only populated for profile-centric person.
+     * DEPRECATED. No data is returned for this field anymore. (go/people-api-concepts#repeated): Use person.profile_url_repeated instead. Access to this field is restricted to a set of legacy clients. This is a Google+-only field. See go/fbs-g+-deprecation. NOTE: `Person.profile_url` is only populated for profile-centric person.
      */
     profileUrl?: string | null;
     /**
-     * This is a Google+-only field. See go/fbs-g+-deprecation.
+     * DEPRECATED. No data is returned for this field anymore. This is a Google+-only field. See go/fbs-g+-deprecation.
      */
     profileUrlRepeated?: Schema$AppsPeopleOzExternalMergedpeopleapiProfileUrl[];
     /**
@@ -3668,15 +3668,6 @@ export namespace contentwarehouse_v1 {
      * The camera receiver cast apps the device supports. Only used if has_limited_camera_stream_capability is true.
      */
     supportedCameraReceivers?: Schema$AssistantApiCoreTypesCastAppInfo[];
-  }
-  /**
-   * Information about the readiness of Home app features on the device. As of January 2023, this is only populated by Assistant on Android.
-   */
-  export interface Schema$AssistantApiCapabilitiesHomeAppCapabilities {
-    /**
-     * The app's installation and setup state. This is most pertinent for Tangor, where lock screen Smart Home queries are fulfilled by a Home app activity that may be blocked if this value is not `SETUP_STATE_COMPLETE`.
-     */
-    setupState?: string | null;
   }
   /**
    * Capabilities that are associated with Assistants on auto surfaces. This is different from other capabilities such as CarSettingsCapabilities, CloudCarCapabilities since they are specific to settings and 3P cloud information. All the auto/car Assistant specific capabilities should live here.
@@ -6759,10 +6750,6 @@ export namespace contentwarehouse_v1 {
     gacsCapabilities?: Schema$AssistantApiGacsCapabilities;
     gcmCapabilities?: Schema$AssistantApiGcmCapabilities;
     /**
-     * Google Home app features.
-     */
-    homeAppCapabilities?: Schema$AssistantApiCapabilitiesHomeAppCapabilities;
-    /**
      * Capabilities related to live TV channels.
      */
     liveTvChannelCapabilities?: Schema$AssistantApiLiveTvChannelCapabilities;
@@ -8096,17 +8083,21 @@ export namespace contentwarehouse_v1 {
     surfaceType?: string | null;
   }
   /**
-   * The states of the device. They are dynamic and may change based on the current context. Next ID: 5
+   * The states of the device. They are dynamic and may change based on the current context. Next ID: 6
    */
   export interface Schema$AssistantGroundingRankerDeviceTargetingFeaturesStates {
     /**
-     * The distance of the device relative to others that hear the user's OKG. Timestamp of when the device was last used. Should correspond to when the AssistantRequestParams (in ASSISTANT_SNAPSHOT corpus) were last written for this device.
+     * The distance of the device relative to others that hear the user's OKG.
      */
     distance?: string | null;
     /**
      * Indicate whether the device is docked on a base.
      */
     isDocked?: boolean | null;
+    /**
+     * Whether the device is a local device, i.e. the device that heard OKG from a user and is processed by an assistant pipeline. If multiple devices heard OKG (MDA case), each hearing device would be considered a local device in its own assistant pipeline. Example: A user says "OKG, play music on TV" to Google Home, and music is played on the TV. Google home is considered a local device, while TV is considered a remote device. Timestamp of when the device was last used. Should correspond to when the AssistantRequestParams (in ASSISTANT_SNAPSHOT corpus) were last written for this device.
+     */
+    isLocal?: boolean | null;
     /**
      * Indicate whether the device is locked.
      */
@@ -8170,7 +8161,7 @@ export namespace contentwarehouse_v1 {
     assistantInteractionFeatures?: Schema$AssistantGroundingRankerAssistantInteractionFeatures;
   }
   /**
-   * Features to be passed from Media GP to HGR. Next ID: 17
+   * Features to be passed from Media GP to HGR. Next ID: 18
    */
   export interface Schema$AssistantGroundingRankerMediaGroundingProviderFeatures {
     /**
@@ -8185,6 +8176,10 @@ export namespace contentwarehouse_v1 {
      * Mid of the media item. This is currently only used in manual rules.
      */
     entityMid?: string | null;
+    /**
+     * True if the candidate has a CAST_VIDEO deeplink regardless of which provider was chosen.
+     */
+    hasCastVideoDeeplink?: boolean | null;
     /**
      * True if the argument's type was explicitly mentioned in the query.
      */
@@ -8233,7 +8228,7 @@ export namespace contentwarehouse_v1 {
     youtubeConfidenceScore?: number | null;
   }
   /**
-   * Features to be extracted from Podcast GP for ranking in HGR. Next ID: 6
+   * Features to be extracted from Podcast GP for ranking in HGR. Next ID: 7
    */
   export interface Schema$AssistantGroundingRankerPodcastGroundingProviderFeatures {
     /**
@@ -8256,6 +8251,10 @@ export namespace contentwarehouse_v1 {
      * Tstar score is a signal that indicates the quality of the entity.
      */
     scubedTstarScore?: number | null;
+    /**
+     * This score is in the range [0.0, 1.0] and is used for cross-backend (e.g., YT vs another Music/Podcast service provider) ranking and scoring. 0.0 means no confidence and 1.0 means full confidence.
+     */
+    youtubeConfidenceScore?: number | null;
   }
   /**
    * Features to be extracted from Provider GP for ranking in HGR. Next ID: 7
@@ -8980,7 +8979,14 @@ export namespace contentwarehouse_v1 {
     isGrounded?: boolean | null;
   }
   /**
-   * Signals to be used by the Prefulfillment Ranker. Derived from the ParsingSignals and GroundingSignals carried by the FunctionCall. LINT.IfChange Next ID: 62
+   * Features used by the PrefulfillmentRanker's scorer exclusively to break ties.
+   */
+  export interface Schema$AssistantPfrTiebreakingMetadata {
+    fingerprint?: string | null;
+    sortedNameString?: string | null;
+  }
+  /**
+   * Signals to be used by the Prefulfillment Ranker. Derived from the ParsingSignals and GroundingSignals carried by the FunctionCall. LINT.IfChange Next ID: 65
    */
   export interface Schema$AssistantPrefulfillmentRankerPrefulfillmentSignals {
     /**
@@ -9092,6 +9098,10 @@ export namespace contentwarehouse_v1 {
      */
     isSageDisabledIntent?: boolean | null;
     /**
+     * Whether the intent is produced by the Sage IntentGenerator invoked by the NSP intent-generator (thus, Sage-in-NSP-invoking_Sage, or Sage-in-Nage).
+     */
+    isSageInNageIntent?: boolean | null;
+    /**
      * Whether this intent was generated by Sage.
      */
     isSageIntent?: boolean | null;
@@ -9164,6 +9174,10 @@ export namespace contentwarehouse_v1 {
      */
     phase?: string | null;
     /**
+     * Whether the intent comes from the Sage IntentGenerator's "platinum" source, signifying high-confidence in quality.
+     */
+    platinumSource?: boolean | null;
+    /**
      * Cosine similarity between predicted query-to-term model and assistant intent-type-based salient terms. This is intended to be only used for ACE ranking and only populated for assistant traffic.
      */
     pq2tVsAssistantIbstCosine?: number | null;
@@ -9188,6 +9202,7 @@ export namespace contentwarehouse_v1 {
      */
     smarthomeIntentMetadata?: Schema$AssistantPfrSmartHomeIntentMetadata;
     subIntentType?: string | null;
+    tiebreakingMetadata?: Schema$AssistantPfrTiebreakingMetadata;
     /**
      * Average of per-word confidence for top speech recognition hypothesis. The value is from RecognizerHypothesisLog: http://google3/logs/proto/speech/service/recognizer_log.proto?l=848&rcl=281400256
      */
@@ -10478,7 +10493,7 @@ export namespace contentwarehouse_v1 {
     version?: number | null;
   }
   /**
-   * Protocol record used for collecting together all information about a document. Please consult go/dj-explorer for two basic questions about `CompositeDoc`: - Where should I look up certain information (e.g: pagerank, language)? - What does each field in CompositeDoc mean and who should I contact if I have questions? To add a new field into CompositeDoc, or change existing field's size significantly, please file a ticket at go/dj-new-field, fill in necessary information and get approved by docjoin-access@ team. Next id: 191
+   * Protocol record used for collecting together all information about a document. Please consult go/dj-explorer for two basic questions about `CompositeDoc`: - Where should I look up certain information (e.g: pagerank, language)? - What does each field in CompositeDoc mean and who should I contact if I have questions? To add a new field into CompositeDoc, or change existing field's size significantly, please file a ticket at go/dj-new-field, fill in necessary information and get approved by docjoin-access@ team. Next id: 193
    */
   export interface Schema$CompositeDoc {
     /**
@@ -10487,7 +10502,13 @@ export namespace contentwarehouse_v1 {
     accessRequirements?: Schema$IndexingPrivacyAccessAccessRequirements;
     additionalchecksums?: Schema$CompositeDocAdditionalChecksums;
     alternatename?: Schema$CompositeDocAlternateName[];
+    /**
+     * Mark as non-personal since no personal fields will be populated in `anchors.link_additional_info` and `anchors.additional_info`. For more details of Search personal data, see go/dma52-search-cdoc-fields.
+     */
     anchors?: Schema$Anchors;
+    /**
+     * Mark as non-personal since it's an aggregation of anchors. For more details of Search personal data, see go/dma52-search-cdoc-fields.
+     */
     anchorStats?: Schema$IndexingDocjoinerAnchorStatistics;
     /**
      * This field is present iff the page has a bad SSL certificate itself or in its redirect chain.
@@ -10737,6 +10758,10 @@ export namespace contentwarehouse_v1 {
      */
     normalizedClickScore?: number | null;
     /**
+     * Vertical membership of the document. - `primary_vertical` is the vertical that initiated indexing of this document (or empty if the vertical was websearch). - `verticals` is the full list of verticals that contained this document (excluding websearch) at indexing time. `primary_vertical` may or may not be an element of `verticals` because of vertical membership skew between the ingestion time and indexing time. See go/one-indexing-for-web for more background.
+     */
+    primaryVertical?: string | null;
+    /**
      * The raw navboost count for the canonical url without aggregating the navboost from dup urls. This field is used when building forwarding map.
      */
     rawNavboost?: number | null;
@@ -10764,6 +10789,7 @@ export namespace contentwarehouse_v1 {
      * UrlPatternSignals for this doc, used to compute document score in LTG (see indexing/signal_aggregator/proto/signal-aggregator.proto for details).
      */
     urlPatternSignals?: Schema$IndexingSignalAggregatorUrlPatternSignals;
+    verticals?: string[] | null;
     /**
      * Indexing info about videos.
      */
@@ -13807,7 +13833,7 @@ export namespace contentwarehouse_v1 {
    */
   export interface Schema$GeostoreFeatureIdForwardingsProto {
     /**
-     * If the feature has been marked as a DUPLICATE of another feature, this is the feature ID of that other feature. Note that the other feature may itself be removed. This field is NOT set in (1).
+     * If the feature has been marked as a DUPLICATE of another feature, this is the feature ID of that other feature. Note that the other feature may itself be removed. This field is always set.
      */
     duplicateOf?: Schema$GeostoreFeatureIdProto;
     /**
@@ -14060,9 +14086,6 @@ export namespace contentwarehouse_v1 {
      * Defines the geometry of the feature. The geometry may be specified as an arbitrary union of points, poses, polylines, tracks, and polygons. Points, poses, polylines, and tracks are assumed to represent regions of unspecified size or width rather than regions of zero area. Most features should have some sort of geometry. Geometry may be synthesized if none is available (e.g., polygons for postal codes). The synthetic_geometry flag should be set in that case. Point is currently enforced as a non-repeating field for all feature types, though it is defined as repeating in case future modeling requires multiple points. The number of allowed polylines, tracks, or polygons vary based on feature type. A feature can have at most one pose (it is an optional field).
      */
     point?: Schema$GeostorePointProto[];
-    /**
-     * ** DEPRECATED ** Detail discussion could be found at b/18611003.
-     */
     political?: Schema$GeostorePoliticalProto;
     polygon?: Schema$GeostorePolygonProto[];
     /**
@@ -14145,6 +14168,10 @@ export namespace contentwarehouse_v1 {
      */
     storefrontGeometry?: Schema$GeostoreAnchoredGeometryProto[];
     /**
+     * Geometry Store ID and materialized geometry for a POI feature's storefront(s).
+     */
+    storefrontGeometryModel?: Schema$GeostoreGeometryStoreReferenceProto;
+    /**
      * We prefer features that have geometry over those that do not. In some cases we synthesize geometry (e.g., polygons for postal codes). This flag is set to indicate features that have such synthetic geometry.
      */
     syntheticGeometry?: boolean | null;
@@ -14214,20 +14241,23 @@ export namespace contentwarehouse_v1 {
     internal?: Schema$GeostoreInternalFieldMetadataProto;
   }
   /**
-   * Proto used to represent rights for a field type. See go/geo-rights for more details. NOTE: Use google3/geostore/provenance/public/rights.h or google3/java/com/google/geostore/provenance/rights/Rights.java instead of accessing this proto directly.
+   * Proto used to represent rights for a feature property id. See go/geo-rights for more details. NOTE: Use google3/geostore/provenance/public/rights.h or google3/java/com/google/geostore/provenance/rights/Rights.java instead of accessing this proto directly.
    */
   export interface Schema$GeostoreFieldWithRightsProto {
     /**
-     * ** DEPRECATED ** If field_type is set to FEATURE_ATTRIBUTE or KNOWLEDGE_GRAPH_PROPERTY, the attribute ID / KG property ID that makes this field with rights complete.
+     * **DEPRECATED** Never set.
      */
     attributeId?: string | null;
+    /**
+     * The feature property id for which this entry tracks rights.
+     */
     featurePropertyId?: Schema$GeostoreFeaturePropertyIdProto;
     /**
-     * The field type for which the rights level are tracked on. The default value here has to match the value of fieldtype::NONE.
+     * **DEPRECATED** The field type for which this entry tracks rights. There may be multiple entries for the same field type - prefer feature_property_id to uniquely identify a particular entry.
      */
     fieldType?: number | null;
     /**
-     * The minimum rights level for all the current values on the field type.
+     * The minimum rights level among all current values for this feature property id.
      */
     minRightsLevel?: string | null;
   }
@@ -15847,6 +15877,10 @@ export namespace contentwarehouse_v1 {
      */
     priorityMetadata?: Schema$GeostoreFieldMetadataProto;
     /**
+     * RESERVED
+     */
+    ramp?: Schema$GeostoreSegmentProtoRampProto;
+    /**
      * The set of restrictions that apply to this segment. Restrictions may make a single segment, turn, or more complex maneuver along a set of segments unroutable for the specified travel modes, or may only add penalties or warnings, depending on the restriction type. Turn restrictions are one example of a restriction. By default, turns are allowed onto all outgoing segments from this segment's intersection (including the sibling of this segment, i.e. U-turns are allowed by default). If any of these turns are disallowed they will be listed as "subpath restrictions". A subpath restriction disallows travel on given sequence of segments. In the case of a disallowed turn, the subpath simply consists of the source and destination feature ids. There may also be restrictions that apply to all travel on this segment (e.g. chains required, or closed in winter), or restrictions that just apply to certain lanes (e.g. high occupancy vehicle lanes).
      */
     restriction?: Schema$GeostoreRestrictionProto[];
@@ -15902,6 +15936,15 @@ export namespace contentwarehouse_v1 {
      * A collection of landmarks that are visible when traveling along this segment and useful for wayfinding to users following routes using this segment. The landmark need not be on the segment. Each segment in a pair of siblings specifies its landmarks independently. A landmark applicable to both appears in both.
      */
     visibleLandmark?: Schema$GeostoreLandmarkReferenceProto[];
+  }
+  /**
+   * Encapsulates ramp-specific properties.
+   */
+  export interface Schema$GeostoreSegmentProtoRampProto {
+    /**
+     * The highest priority of any TYPE_ROAD endpoint segment which is transitively connected to this ramp via other ramp segments. For instance, if we have two roads connected through a series of ramps (omitting intersections): Road(P=96)-\> Ramp 1 -\> Ramp 2 -\> Ramp 3 -\> Road(P=122) -\> Road(P=144) The `max_connected_priority` of all three intermediary ramps is 122. It's not 144, since Road(P=144) is connected through another road, not a ramp. This differs from the usual `SegmentProto.priority` field, which contains the lowest priority across any connected road segment.
+     */
+    maxConnectedPriority?: string | null;
   }
   /**
    * This proto represents the geographic area served by an establishment. WARNING: This proto is not meant to be used directly. Please use the provided libraries. http://google3/geostore/base/public/service_area.h http://google3/java/com/google/geostore/base/ServiceArea.java
@@ -22094,7 +22137,7 @@ export namespace contentwarehouse_v1 {
     version?: number | null;
   }
   /**
-   * This defines the per-doc data which is extracted from thumbnails and propagated over to indexing. It contains all information that can be used for restricts. Next tag id: 129
+   * This defines the per-doc data which is extracted from thumbnails and propagated over to indexing. It contains all information that can be used for restricts. Next tag id: 130
    */
   export interface Schema$ImageData {
     /**
@@ -22219,7 +22262,7 @@ export namespace contentwarehouse_v1 {
     flowOutput?: Schema$ImageContentFlowProtoProd;
     h2c?: number | null;
     /**
-     * 'Hovers to Impressions' and 'Hovers to Clicks' ratios for an image.
+     * 'Hovers to Impressions' and 'Hovers to Clicks' ratios for an image. These are considered Search CPS Personal Data due to concerns that they may be used to reidentify or confirm the presence of specific singleton (unique) queries.
      */
     h2i?: number | null;
     /**
@@ -22285,6 +22328,10 @@ export namespace contentwarehouse_v1 {
     licensedWebImagesOptInState?: string | null;
     lineartDetectorScore?: number | null;
     lineartDetectorVersion?: number | null;
+    /**
+     * Bitmask of LinkInfo enum in google3/indexing/converter/outlinks/linkinfo.h.
+     */
+    linkinfoType?: string | null;
     multibangKgEntities?: Schema$ImageDataMultibangEntities;
     nearDupFeatures?: string | null;
     nearDupFeaturesSmall?: string[] | null;
@@ -22902,7 +22949,7 @@ export namespace contentwarehouse_v1 {
     region?: Schema$ImageRegionsImageRegion[];
   }
   /**
-   * Next Tag: 8
+   * Next Tag: 9
    */
   export interface Schema$ImageRepositoryAmarnaCloudSpeechSignals {
     /**
@@ -22913,14 +22960,15 @@ export namespace contentwarehouse_v1 {
      * The language id input for creating this ASR without regional info. Same format as in go/ytlangid. This field is populated in Kronos Amarna Cloud Speech operator and passed to Amarna, but it is cleared before stored in Amarna's metadata table.
      */
     langWithoutLocale?: string | null;
-    /**
-     * Identifying which ASR models are used for the result
-     */
     modelIdentifier?: string | null;
     /**
      * Raw results from Cloud Speech API
      */
     results?: Schema$ImageRepositorySpeechRecognitionResult[];
+    /**
+     * The metadata about the S3 recognizer used.
+     */
+    s3RecognizerMetadataResponse?: Schema$ImageRepositoryS3RecognizerMetadataResponse;
     /**
      * This field contains full (stitched) transcription, word-level time offset , and word-level byte offset. The value of this field is derived from the SpeechRecognitionResult field above.
      */
@@ -23289,6 +23337,14 @@ export namespace contentwarehouse_v1 {
      * Count the number of total frames in the audio chunk as well as the number of speech frames.
      */
     totalFrameCount?: number | null;
+  }
+  /**
+   * This proto is trimmed down from RecognizerMetadataResponse in google3/speech/service/s3/services/recognizer/recognizer.proto
+   */
+  export interface Schema$ImageRepositoryS3RecognizerMetadataResponse {
+    mode?: string | null;
+    modelInfoLabel?: string | null;
+    serviceName?: string | null;
   }
   /**
    * A message containing embedding information and localization scores using the VSS product recognition module.
@@ -26023,6 +26079,10 @@ export namespace contentwarehouse_v1 {
    */
   export interface Schema$KnowledgeAnswersAnyType {
     /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
+    /**
      * Contains data about current schema remodelings at this ValueType level. For more information see go/meaning-remodeling-framework.
      */
     remodelings?: Schema$NlpMeaningMeaningRemodelings;
@@ -26035,6 +26095,10 @@ export namespace contentwarehouse_v1 {
      * Use in parsing: the value filled with must be in the list of this. If no attribute ids are specified, this value can be filled with any attribute.
      */
     attribute?: string[] | null;
+    /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
     /**
      * If exist, the attribute will be applied on the given pivot slot. This helps type checking when qrewrite constructs function calls with an attribute-typed slot.
      */
@@ -26049,6 +26113,10 @@ export namespace contentwarehouse_v1 {
    */
   export interface Schema$KnowledgeAnswersBooleanType {
     /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
+    /**
      * Contains data about current schema remodelings at this ValueType level. For more information see go/meaning-remodeling-framework.
      */
     remodelings?: Schema$NlpMeaningMeaningRemodelings;
@@ -26062,6 +26130,10 @@ export namespace contentwarehouse_v1 {
      */
     collection?: string[] | null;
     /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
+    /**
      * Contains data about current schema remodelings at this ValueType level. For more information see go/meaning-remodeling-framework.
      */
     remodelings?: Schema$NlpMeaningMeaningRemodelings;
@@ -26071,6 +26143,10 @@ export namespace contentwarehouse_v1 {
    */
   export interface Schema$KnowledgeAnswersCompoundType {
     /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
+    /**
      * Contains data about current schema remodelings at this ValueType level. For more information see go/meaning-remodeling-framework.
      */
     remodelings?: Schema$NlpMeaningMeaningRemodelings;
@@ -26079,7 +26155,7 @@ export namespace contentwarehouse_v1 {
     slotNames?: string[] | null;
   }
   /**
-   * A DateType configures a value whose type is intended to be a date. LINT.IfChange Next id: 16
+   * A DateType configures a value whose type is intended to be a date. LINT.IfChange Next id: 17
    */
   export interface Schema$KnowledgeAnswersDateType {
     /**
@@ -26135,12 +26211,20 @@ export namespace contentwarehouse_v1 {
      */
     allowYearResolution?: boolean | null;
     /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
+    /**
      * Contains data about current schema remodelings at this ValueType level. For more information see go/meaning-remodeling-framework.
      */
     remodelings?: Schema$NlpMeaningMeaningRemodelings;
     subType?: string | null;
   }
   export interface Schema$KnowledgeAnswersDependencyType {
+    /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
     containerType?: Schema$KnowledgeAnswersContainerType;
     intersectType?: Schema$KnowledgeAnswersIntersectType;
     /**
@@ -26165,6 +26249,10 @@ export namespace contentwarehouse_v1 {
    */
   export interface Schema$KnowledgeAnswersDurationType {
     /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
+    /**
      * Range constraint limits the set of durations accepted. The values of the range are in milliseconds. Currently, this constraint is only enforced in Loose Parser.
      */
     rangeConstraint?: Schema$KnowledgeAnswersRangeConstraint;
@@ -26174,13 +26262,17 @@ export namespace contentwarehouse_v1 {
     remodelings?: Schema$NlpMeaningMeaningRemodelings;
   }
   /**
-   * An EntityType configures a value whose type is intended to be an entity. Entities may be specified using either the collection(s) to which they belong, or explicitly via a list of KG-ids. Both collections and ids can be specified, in which case the type will be the union of the id(s) and all mids within the collection(s). Next available tag: 9
+   * An EntityType configures a value whose type is intended to be an entity. Entities may be specified using either the collection(s) to which they belong, or explicitly via a list of KG-ids. Both collections and ids can be specified, in which case the type will be the union of the id(s) and all mids within the collection(s). Next available tag: 10
    */
   export interface Schema$KnowledgeAnswersEntityType {
     /**
      * This field specifies that containing entity must be: - in *any* 'collection' if 'in_all_collections' is false (default) - in *every* 'collection' if 'in_all_collections' is true. The collection field contains strings of the form '/collection/'. If no collections are specified, this value can be filled with any entity. A collection specified as an empty string has a special meaning for Aqua induction, which is that the type includes all entities.
      */
     collection?: string[] | null;
+    /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
     /**
      * The entity that this value is filled with must not be any of these collections (denoted by a /collection/x id). This restriction does not affect parsing; it is used only to filter attributes in the extraction flow.
      */
@@ -26431,7 +26523,7 @@ export namespace contentwarehouse_v1 {
     valueIndex?: number | null;
   }
   /**
-   * A message representing the signals associated with an argument. NEXT ID TO USE: 58 For //depot/google3/logs/proto/knowledge/interpretation/intent_query.proto in the "ThenChange", fields under Argument.signals in the serving proto are stored directly under Argument on the logging side. For example, see http://google3/nlp/semantic_parsing/data_management/logs/web_logs/semantic_logging_converters/semantic_logging_request_argument_converter.cc?l=58&rcl=322925428. LINT.IfChange
+   * A message representing the signals associated with an argument. NEXT ID TO USE: 59 For //depot/google3/logs/proto/knowledge/interpretation/intent_query.proto in the "ThenChange", fields under Argument.signals in the serving proto are stored directly under Argument on the logging side. For example, see http://google3/nlp/semantic_parsing/data_management/logs/web_logs/semantic_logging_converters/semantic_logging_request_argument_converter.cc?l=58&rcl=322925428. LINT.IfChange
    */
   export interface Schema$KnowledgeAnswersIntentQueryArgumentSignals {
     /**
@@ -26535,6 +26627,10 @@ export namespace contentwarehouse_v1 {
      * The usual semantic role associated with the signal from lightweight tokens attached to this argument span.
      */
     locationMarkersSignals?: Schema$KnowledgeAnswersIntentQueryLocationMarkersSignals;
+    /**
+     * The type category for the location stored in this Argument, if it exists.
+     */
+    locationType?: string | null;
     /**
      * Signals about the media entity for this argument.
      */
@@ -26875,7 +26971,7 @@ export namespace contentwarehouse_v1 {
     unexplainedTokens?: Schema$KnowledgeAnswersIntentQueryTokens[];
   }
   /**
-   * Next ID: 37
+   * Next ID: 38
    */
   export interface Schema$KnowledgeAnswersIntentQueryFunctionCallSignals {
     /**
@@ -26937,6 +27033,10 @@ export namespace contentwarehouse_v1 {
      * Whether the interpretation was generated from the neural categorical parser.
      */
     isNeuralCategoricalInterpretation?: boolean | null;
+    /**
+     * Whether the FunctionCall is created as a refined_meaning in resolution. Downstream code will look at this field to see if it needs to create a new refined QueryInterpretation.
+     */
+    isRefinedMeaning?: boolean | null;
     /**
      * Denotes this is a sub-intent used for composing an Assistant UI response. The assistant dialog should output ui_composition_shelf in the SystemResponse if it can fulfill the intent. More info in go/davinci-design and go/davinci-di-fulfillment
      */
@@ -27526,6 +27626,10 @@ export namespace contentwarehouse_v1 {
    */
   export interface Schema$KnowledgeAnswersMeasurementType {
     /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
+    /**
      * Contains data about current schema remodelings at this ValueType level. For more information see go/meaning-remodeling-framework.
      */
     remodelings?: Schema$NlpMeaningMeaningRemodelings;
@@ -27534,6 +27638,10 @@ export namespace contentwarehouse_v1 {
    * A NormalizedStringType configures a value that is one of the listed normalized_values. An arbitrary mapping from input strings to normalized_values can be specified in the local intent config. Only alphabetical strings can be used as normalized_values. This type should NOT be used for: - Mids, ids, dates, or other structured data. Use an annotator instead, and address any quality issues at the annotator level. - Simplifying grammar rules. If you are not using the normalized_values in your question semantics, you should remove the slot. Use additional query_examples instead.
    */
   export interface Schema$KnowledgeAnswersNormalizedStringType {
+    /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
     normalizedValue?: string[] | null;
     /**
      * Contains data about current schema remodelings at this ValueType level. For more information see go/meaning-remodeling-framework.
@@ -27544,6 +27652,10 @@ export namespace contentwarehouse_v1 {
    * A NumberType configures a value whose type is intended to be numeric.
    */
   export interface Schema$KnowledgeAnswersNumberType {
+    /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
     /**
      * If true, the semantics of the NumberType argument are retained as a string, rather than being converted to a float-type object. This option is particularly useful in cases where leading 0s in the user input are meaningful, e.g. for zip codes or sports jersey numbers. For the user- specified value "01", for instance, the PathQuery semantics will be: def $Slot "01"
      */
@@ -27579,9 +27691,6 @@ export namespace contentwarehouse_v1 {
   export interface Schema$KnowledgeAnswersOpaqueDeviceType {}
   export interface Schema$KnowledgeAnswersOpaqueDeviceUserIdentityType {}
   export interface Schema$KnowledgeAnswersOpaqueHomeAutomationDeviceType {}
-  /**
-   * A LocationType configures a value whose type is a Location message, for example, the output of the Location subgrammar. Note that this location type is not the same as a "location entity" (an entity with a location indicating type/collection, which is annotated by QRef). The scope of a LocationType is usually broader than a location entity, it may represent - businesses, places, and POIs (location entities from QRef) - addresses ("123 Main St., New York, NY") or even just coordinates (latitude, longitude) - business categories (e.g., "pharmacies" or "gas stations") - SAFT locations - aliases (including "home" and "work") - contacts - combinations of a location with modifiers and constraints (e.g., "chinese restaurant near me" or "cheap kid-friendly hotels") - ungrounded locations produced by ungrounded_location model See go/location-type for the details of the location proto output by location subgrammar.
-   */
   export interface Schema$KnowledgeAnswersOpaqueLocationType {}
   export interface Schema$KnowledgeAnswersOpaqueMediaType {}
   export interface Schema$KnowledgeAnswersOpaqueMessageNotificationType {}
@@ -27603,7 +27712,7 @@ export namespace contentwarehouse_v1 {
   export interface Schema$KnowledgeAnswersOpaqueShoppingStoreType {}
   export interface Schema$KnowledgeAnswersOpaqueTimerType {}
   /**
-   * Note: OpaqueType is deprecated and addition of new fields is not allowed. Refer to go/opaque_type for details. If you think this is the only way to implement your feature, attend an office hours (go/meaning-help) and discuss with the MRF team. An OpaqueType configures a value whose type is only interpretable by _specific_ clients of the intent catalog. This means horizontal 'features' like pretty printing, correct logging, intent blacklisting and signal aggregation will not work for opaque value types. It has a field for each type in IntentQuery that is not covered by a non-opaque type (specifically: protocol messages). The fields are themselves messages declared in this file. The specific opaque value types must be empty messages. If you find a need to add any fields to these messages, make them non-opaque and implement all of the code to treat them as first class types. It is allowable for a value to have more than one of the opaque types. See http://go/opaque-type-for-value-type. LINT.IfChange Next Id: 31
+   * Note: OpaqueType is deprecated and addition of new fields is not allowed. Refer to go/opaque_type for details. If you think this is the only way to implement your feature, attend an office hours (go/meaning-help) and discuss with the MRF team. An OpaqueType configures a value whose type is only interpretable by _specific_ clients of the intent catalog. This means horizontal 'features' like pretty printing, correct logging, intent blacklisting and signal aggregation will not work for opaque value types. It has a field for each type in IntentQuery that is not covered by a non-opaque type (specifically: protocol messages). The fields are themselves messages declared in this file. The specific opaque value types must be empty messages. If you find a need to add any fields to these messages, make them non-opaque and implement all of the code to treat them as first class types. It is allowable for a value to have more than one of the opaque types. See http://go/opaque-type-for-value-type. LINT.IfChange Next Id: 32
    */
   export interface Schema$KnowledgeAnswersOpaqueType {
     aogType?: Schema$KnowledgeAnswersOpaqueAogType;
@@ -27614,6 +27723,10 @@ export namespace contentwarehouse_v1 {
     calendarReferenceType?: Schema$KnowledgeAnswersOpaqueCalendarReferenceType;
     complexQueriesRewriteType?: Schema$KnowledgeAnswersOpaqueComplexQueriesRewriteType;
     componentReferenceType?: Schema$KnowledgeAnswersOpaqueComponentReferenceIndexType;
+    /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
     deviceIdType?: Schema$KnowledgeAnswersOpaqueDeviceIdType;
     deviceType?: Schema$KnowledgeAnswersOpaqueDeviceType;
     deviceUserIdentityType?: Schema$KnowledgeAnswersOpaqueDeviceUserIdentityType;
@@ -27645,6 +27758,10 @@ export namespace contentwarehouse_v1 {
    */
   export interface Schema$KnowledgeAnswersPlexityRequirement {
     /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
+    /**
      * Contains data about current schema remodelings at this ValueType level. For more information see go/meaning-remodeling-framework.
      */
     remodelings?: Schema$NlpMeaningMeaningRemodelings;
@@ -27657,6 +27774,10 @@ export namespace contentwarehouse_v1 {
    * A special type representing a polar question.
    */
   export interface Schema$KnowledgeAnswersPolarQuestionType {
+    /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
     /**
      * Contains data about current schema remodelings at this ValueType level. For more information see go/meaning-remodeling-framework.
      */
@@ -27688,6 +27809,10 @@ export namespace contentwarehouse_v1 {
      */
     allowAll?: boolean | null;
     /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
+    /**
      * Determines whether or not the meaning schema that contains this semantic_type conforms to a function call with the name and arguments taken from the meaning schema. As it refers to the "containing_intent", this field should only be set in a semantic_type declared in an intent's type_members field. The behavior of this field is undefined in other cases, for example, declaring the type of an intent slot. On Assistant, we use meaning schemas for argument types to represent both function call values as well as a reusable tool to host other argument values (opaque types, normalized strings, subsets of entities) across intents. Teams need this information to run conformance checks and annotate new data. Example: If the intents below are in the intent catalog, then: - Intent(slot="some string") is conformant, because Type has string_type{\} in its type_members. - Intent(slot=Type()) is not conformant, because Type has set semantic_type.includes_containing_intent to false. - Intent(slot=SubType()) is conformant, because type_members is not inherited. { id: "Intent" slot: { name: "slot" type: { semantic_type { name: "Type" \}\} \} \} { id: "Type" type_members { string_type{\} semantic_type { includes_containing_intent: false \} \} \} { id: "SubType" parent { id: "Type" relationship_type: SUBTYPE \} \}
      */
     includesContainingIntent?: boolean | null;
@@ -27696,11 +27821,15 @@ export namespace contentwarehouse_v1 {
      */
     name?: string[] | null;
     /**
+     * Like `name_remodelings`, but for ComponentSpecificContracts instead of remodelings.
+     */
+    nameContracts?: Schema$NlpMeaningSemanticTypeNameComponentSpecificContracts[];
+    /**
      * Contains data about current schema remodelings at the SemanticType name level. The "name" field contains all possible semantic type names and "semantic_type_name_remodelings" acts as an overlay to determine which ones to surface based on which schema remodeling IDs are requested. For more information see go/meaning-remodeling-framework.
      */
     nameRemodelings?: Schema$NlpMeaningSemanticTypeNameMeaningRemodelings[];
     /**
-     * Contains data about current schema remodelings at this ValueType level. For more information see go/meaning-remodeling-framework.
+     * Contains data about current schema remodelings at this ValueType lev©el. For more information see go/meaning-remodeling-framework.
      */
     remodelings?: Schema$NlpMeaningMeaningRemodelings;
   }
@@ -27864,6 +27993,10 @@ export namespace contentwarehouse_v1 {
    */
   export interface Schema$KnowledgeAnswersStateOfAffairsType {
     /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
+    /**
      * Contains data about current schema remodelings at this ValueType level. For more information see go/meaning-remodeling-framework.
      */
     remodelings?: Schema$NlpMeaningMeaningRemodelings;
@@ -27872,6 +28005,10 @@ export namespace contentwarehouse_v1 {
    * A StringType configures a value whose type is intended to be arbitrary text.
    */
   export interface Schema$KnowledgeAnswersStringType {
+    /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
     /**
      * Contains data about current schema remodelings at this ValueType level. For more information see go/meaning-remodeling-framework.
      */
@@ -27886,6 +28023,10 @@ export namespace contentwarehouse_v1 {
    */
   export interface Schema$KnowledgeAnswersTimeZoneType {
     /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
+    /**
      * Contains data about current schema remodelings at this ValueType level. For more information see go/meaning-remodeling-framework.
      */
     remodelings?: Schema$NlpMeaningMeaningRemodelings;
@@ -27894,6 +28035,10 @@ export namespace contentwarehouse_v1 {
    * A TrackingNumberType configures a value whose type is a TrackingNumber.
    */
   export interface Schema$KnowledgeAnswersTrackingNumberType {
+    /**
+     * Contains data about the contracts that this ValueType level is available for. For more information see go/contract-based-conformance.
+     */
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
     /**
      * Contains data about current schema remodelings at this ValueType level. For more information see go/meaning-remodeling-framework.
      */
@@ -29291,6 +29436,12 @@ export namespace contentwarehouse_v1 {
      */
     id?: number | null;
   }
+  /**
+   * A Component-Specific Contract is a proto message that can be placed on various elements of the MeaningCatalog (intent schemas, slots, types) that signals whether that element is part of the contract for a given component. go/contract-based-conformance
+   */
+  export interface Schema$NlpMeaningComponentSpecificContracts {
+    componentSpecificContracts?: string[] | null;
+  }
   export interface Schema$NlpMeaningMeaningRemodeling {
     /**
      * This field can be set to true to indicate that the associated part of the schema is being deleted as part of the remodeling.
@@ -29312,6 +29463,16 @@ export namespace contentwarehouse_v1 {
    */
   export interface Schema$NlpMeaningMeaningRemodelings {
     remodeling?: Schema$NlpMeaningMeaningRemodeling[];
+  }
+  /**
+   * Component-Specific Contract for SemanticTypes, which are atomic string values (and thus can't have a ComponentSpecificContracts message attached to them). go/contract-based-conformance
+   */
+  export interface Schema$NlpMeaningSemanticTypeNameComponentSpecificContracts {
+    componentSpecificContracts?: Schema$NlpMeaningComponentSpecificContracts;
+    /**
+     * Semantic type name.
+     */
+    name?: string | null;
   }
   /**
    * Associates remodeling data with a semantic type name.
@@ -35215,6 +35376,10 @@ export namespace contentwarehouse_v1 {
      */
     point?: Schema$GeostorePointProto;
     /**
+     * Encapsulates the privacy policy relevant signals for this event. See go/kansas-embedded-ptokens for additional details. Keep the type fully qualified in case (when) we decide to make proto compiler enforce '.ptoken.PToken' as the only allowed type for the field number 9099. Hence, don't remove the leading '.'. See go/protobuf-ptoken-field for details around the 9099 field number.
+     */
+    ptoken?: Schema$PtokenPToken;
+    /**
      * The id of the sticker asset chosen by the user to replace the default asset for the alias.
      */
     stickerId?: number | null;
@@ -35331,6 +35496,10 @@ export namespace contentwarehouse_v1 {
      * Indicates that this image can be processed as an Adobe HDR (FlexDR) image by reading the MPF segments.
      */
     adobeHdr?: boolean | null;
+    /**
+     * Indicates that this image can be processed as an Apple HDR image by reading the MPF segments (if JPEG) or HEIF segments (if HEIC).
+     */
+    appleHdr?: boolean | null;
     /**
      * Indicates that this image can be processed as a go/ghdr (UltraHDR) image by reading the GContainer in the primary XMP block.
      */
@@ -37402,7 +37571,7 @@ export namespace contentwarehouse_v1 {
     siteChunkSource?: string | null;
   }
   /**
-   * NOTE: When adding a new field to be propagated to Raffia check if NsrPatternSignalSpec needs to be updated. Next ID: 53
+   * NOTE: When adding a new field to be propagated to Raffia check if NsrPatternSignalSpec needs to be updated. Next ID: 54
    */
   export interface Schema$QualityNsrNsrData {
     /**
@@ -37415,6 +37584,10 @@ export namespace contentwarehouse_v1 {
      */
     chardEncoded?: number | null;
     chardVariance?: number | null;
+    /**
+     * Site-level Chrome views.
+     */
+    chromeInTotal?: number | null;
     /**
      * An id for defining clusters of sites. Used in ecosystem experiments (project Tundra).
      */
@@ -39806,10 +39979,6 @@ export namespace contentwarehouse_v1 {
      */
     docScore?: number | null;
     /**
-     * If the annotation corresponds to a geo topic, this is populated with GeoTopic::normalized_score.
-     */
-    geoTopicNormalizedScore?: number | null;
-    /**
      * True if the entity is the author of the document. This was mainly developed and tuned for news articles (e.g. /m/02x27qn on "www.vogue.com/article/flint-town-netflix") but is also popluated for other content (e.g. scientific articles). Important: the semantics of this field may change in the future or it might be removed and replaced with a different API. If you want to use this field, please reach out to ke-authors@ first.
      */
     isAuthor?: boolean | null;
@@ -39821,10 +39990,6 @@ export namespace contentwarehouse_v1 {
      * Set to true iff the entity matches the full URL of the document, meaning that it is a reference page or related page of the entity.
      */
     isReferencePage?: boolean | null;
-    /**
-     * If the annotation corresponds to a local entity, this is populated with LocalEntityAnnotations::Instance::location_confidence.
-     */
-    localEntityLocationConfidence?: number | null;
     /**
      * Representation of the topicality score that is normalized in [0, 1] and which sum over all entities in the document is 1. It represents the "proportion" of the document that talks about the entity. This score is less human interpretable as the bucketized topicality score (EntityAnnotations.topicality_score), but is more suited for some usages like aggregations.
      */
@@ -40322,7 +40487,7 @@ export namespace contentwarehouse_v1 {
      */
     primaryRecording?: string | null;
     /**
-     * Products-specific entity metadata.
+     * Products-specific entity metadata. Only available in QrefMetadata output.
      */
     productMetadata?: Schema$RepositoryWebrefProductMetadata;
     /**
@@ -41439,7 +41604,7 @@ export namespace contentwarehouse_v1 {
     wallTimeNs?: string | null;
   }
   /**
-   * Products-specific information about the entity. Next available tag: 16.
+   * Products-specific information about the entity. Only available in QrefMetadata output. Next available tag: 16.
    */
   export interface Schema$RepositoryWebrefProductMetadata {
     /**
@@ -41450,7 +41615,6 @@ export namespace contentwarehouse_v1 {
      * All ShoppingIds for this MID that need to be copied to IntentQuery (FunctionCall) if this MID is used in intent generation. See go/iql-shopping-ids for details.
      */
     shoppingIds?: Schema$KnowledgeAnswersIntentQueryShoppingIds;
-    type?: string | null;
     /**
      * All unique variant cluster ids (shopping's GPCs) of this entity.
      */
@@ -41573,22 +41737,6 @@ export namespace contentwarehouse_v1 {
      */
     bookScore?: number | null;
     /**
-     * The raw topicality score of the primary entity.
-     */
-    firstScore?: number | null;
-    /**
-     * Whether the primary entity has any "special" links. Currently a link is considered special if it has a good implication probability and has no negative disambiguation probability.
-     */
-    hasSpecialLinks?: boolean | null;
-    /**
-     * The median mentions core of the primary entity.
-     */
-    medianMentionScore?: number | null;
-    /**
-     * The navboost token coverage ratio. All queries are taken into account.
-     */
-    navboostCoverage?: number | null;
-    /**
      * Reference page score used to select the reference page owner.
      */
     referencePageScore?: number | null;
@@ -41604,14 +41752,6 @@ export namespace contentwarehouse_v1 {
      * This should have the same semantic as single_topicness, and should replace it in the long term.
      */
     singleTopicnessV2?: number | null;
-    /**
-     * =================================== Signals for the single topicness. Only filled in for the primary (i.e., top ranked) entity. The title token coverage ratio.
-     */
-    titleCoverage?: number | null;
-    /**
-     * The sum of raw topicality scores for all entities in this page.
-     */
-    totalSum?: number | null;
   }
   /**
    * A single Mention within a segment as defined by SegmentMentions.SegmentType
@@ -44968,6 +45108,10 @@ export namespace contentwarehouse_v1 {
      */
     disableQueryFeatures?: boolean | null;
     /**
+     * Indicates to not add any new candidates in SnippetFlow.
+     */
+    forceLeadingTextOrMeta?: boolean | null;
+    /**
      * Snippet candidate index selected by snippet brain model. This field will get populated in SnippetFlow in superroot. go/snippets-brain
      */
     snippetBrainSelectedCandidateIndex?: number | null;
@@ -47751,7 +47895,7 @@ export namespace contentwarehouse_v1 {
     MaxAllowedRate?: number | null;
   }
   /**
-   * This is an optional container of arbitrary data that can be added to a FetchReplyData. This data is meant to be logged, but not sent back in a fetch reply (it should be added *after* the reply is prepared). Use FetchResponsePreparatorImpl::AddTrawlerPrivateDataToFetchReplyData to add. See also the comment in fetch_response_preparator_impl.cc. Next Tag: 46
+   * This is an optional container of arbitrary data that can be added to a FetchReplyData. This data is meant to be logged, but not sent back in a fetch reply (it should be added *after* the reply is prepared). Use FetchResponsePreparatorImpl::AddTrawlerPrivateDataToFetchReplyData to add. See also the comment in fetch_response_preparator_impl.cc. Next Tag: 47
    */
   export interface Schema$TrawlerTrawlerPrivateFetchReplyData {
     /**
@@ -47865,6 +48009,10 @@ export namespace contentwarehouse_v1 {
      * What's the post data size (in bytes) if it's a post request.
      */
     PostDataSize?: string | null;
+    /**
+     * Log the prod region (only for regional harpoon requestor ids)
+     */
+    prodRegion?: string | null;
     /**
      * Note TrawlerPrivateFetchReplyData is never sent back to clients. The following field is just for Trawler and Multiverse internal tracking, and clients should not look at this field at all.
      */
@@ -48042,7 +48190,7 @@ export namespace contentwarehouse_v1 {
     trustedGenomeHierarchy?: Schema$VendingConsumerProtoTrustedGenomeHierarchy[];
   }
   /**
-   * Proto message containing the id, localized title, score, and hierarchy level of a trusted genome entity. Next ID: 10
+   * Proto message containing the id, localized title, score, and hierarchy level of a trusted genome entity. Next ID: 12
    */
   export interface Schema$VendingConsumerProtoTrustedGenomeEntity {
     /**
@@ -48053,6 +48201,10 @@ export namespace contentwarehouse_v1 {
      * The identifier of a play trusted genome entity. Required.
      */
     id?: string | null;
+    /**
+     * Indicate whether the trusted genome entity has localized title.
+     */
+    isLocalized?: boolean | null;
     /**
      * The level of the entity. E.g. in hierarchy like Action -\> Platformer \> Endless Runner. Action is level 1, Platformer is level 2 and Endless Runner is level 3. Currently, only APP_TAXONOMY and GAME_TAXONOMY type may have the levels. For entity that does not have hierarchy, its level is 1. Required.
      */
@@ -48065,6 +48217,10 @@ export namespace contentwarehouse_v1 {
      * The localized query string for this trusted genome entity. This query will be used when we want to bring users to SERP on click.
      */
     queryText?: string | null;
+    /**
+     * The corresponding recs topics created from the trusted genome entity if available.
+     */
+    recsTopicId?: string[] | null;
     /**
      * The confidence score of the entity to the app.
      */
@@ -52236,9 +52392,46 @@ export namespace contentwarehouse_v1 {
     teaserImpressions?: string | null;
     upvotes?: string | null;
   }
-  export interface Schema$WatchpageLanguageWatchPageLanguageResult {
+  /**
+   * Next ID: 4
+   */
+  export interface Schema$WatchpageLanguageWatchPageLanguageModelPredictions {
+    /**
+     * A list of watchpage languages predicted arranged according to their scores.
+     */
+    languageScore?: Schema$WatchpageLanguageWatchPageLanguageModelPredictionsLanguageScore[];
+    /**
+     * Does the prediction uses speech signals like audio language.
+     */
+    usesSpeechSignals?: boolean | null;
+    /**
+     * An identifier to recognize the model version used for this prediction.
+     */
+    version?: string | null;
+  }
+  /**
+   * Next ID: 3
+   */
+  export interface Schema$WatchpageLanguageWatchPageLanguageModelPredictionsLanguageScore {
+    /**
+     * Score for the predicted language by the WatchPage Language model.
+     */
+    score?: number | null;
     /**
      * The language predicted by the WatchPage Language model.
+     */
+    watchpageLanguage?: string | null;
+  }
+  /**
+   * Next ID: 3
+   */
+  export interface Schema$WatchpageLanguageWatchPageLanguageResult {
+    /**
+     * Versioned WatchPageLanguageResults. This is to experiment and launch new models. The first prediction is the latest production version.
+     */
+    predictions?: Schema$WatchpageLanguageWatchPageLanguageModelPredictions[];
+    /**
+     * The language predicted by the V1 WatchPage Language model. For new and experimental versions use versioned_language_result.
      */
     watchpageLanguage?: string | null;
   }
@@ -52772,7 +52965,7 @@ export namespace contentwarehouse_v1 {
      */
     sentimentSnippets?: Schema$RepositoryAnnotationsMustangSentimentSnippetAnnotations[];
     /**
-     * The display name of the document's domain used as the first part of VisUrl, e.g, "Google \> play \> store" is the VisUrl of "https://play.google.com/store/". Wherein, "Google" is site_display_name of the domain "google.com". See go/site-display-name for more details.
+     * The domain-level display name of the website, such as "Google" for google.com. See go/site-display-name for more details. As of Aug 2023, this field is being deprecated in favor of `info.[AlternativeTitlesResponse].site_display_name_response` field, which also contains host-level site display names with additional information.
      */
     siteDisplayName?: string | null;
     /**
@@ -52813,7 +53006,7 @@ export namespace contentwarehouse_v1 {
      */
     titleLengthAdjustedForBrowserWidth?: boolean | null;
     /**
-     * How tokens are rendered in generating title. Note: In rendering a title, the page title part and the site/host/domain title part can be flipped after initial rendering. The flip, if happend, may not be reflected in this field. That is, this field may contain the tokens in the original, pre-flip, order.
+     * How tokens are rendered in generating title. Note: In rendering a title, the page title part and the site/host/domain title part can be flipped after initial rendering. The flip, if happened, may not be reflected in this field. That is, this field may contain the tokens in the original, pre-flip, order.
      */
     titleRenderedToken?: Schema$MustangSnippetsRenderedToken[];
     /**
