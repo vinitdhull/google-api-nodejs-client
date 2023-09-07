@@ -1445,6 +1445,10 @@ export namespace firebasehosting_v1beta1 {
      * Required. Immutable. A globally unique identifier for the Hosting site. This identifier is used to construct the Firebase-provisioned subdomains for the site, so it must also be a valid domain name label.
      */
     siteId?: string;
+    /**
+     * Optional. If set, validates that the site_id is available and that the request would succeed, returning the expected resulting site or error.
+     */
+    validateOnly?: boolean;
 
     /**
      * Request body metadata
