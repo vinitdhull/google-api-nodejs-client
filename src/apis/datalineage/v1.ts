@@ -355,6 +355,10 @@ export namespace datalineage_v1 {
     process?: string | null;
   }
   /**
+   * Response message for ProcessOpenLineageRunEvent.
+   */
+  export interface Schema$GoogleCloudDatacatalogLineageV1ProcessOpenLineageRunEventResponse {}
+  /**
    * A lineage run represents an execution of a process that creates lineage events.
    */
   export interface Schema$GoogleCloudDatacatalogLineageV1Run {
@@ -455,7 +459,7 @@ export namespace datalineage_v1 {
      */
     name?: string | null;
     /**
-     * The normal response of the operation in case of success. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`/`Create`/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.
+     * The normal, successful response of the operation. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`/`Create`/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.
      */
     response?: {[key: string]: any} | null;
   }
@@ -600,6 +604,103 @@ export namespace datalineage_v1 {
     }
 
     /**
+     * Creates new lineage events together with their parents: process and run. Updates the process and run if they already exist. Mapped from Open Lineage specification: https://github.com/OpenLineage/OpenLineage/blob/main/spec/OpenLineage.json.
+     *
+     * @param params - Parameters for request
+     * @param options - Optionally override request options, such as `url`, `method`, and `encoding`.
+     * @param callback - Optional callback that handles the response.
+     * @returns A promise if used with async/await, or void if used with a callback.
+     */
+    processOpenLineageRunEvent(
+      params: Params$Resource$Projects$Locations$Processopenlineagerunevent,
+      options: StreamMethodOptions
+    ): GaxiosPromise<Readable>;
+    processOpenLineageRunEvent(
+      params?: Params$Resource$Projects$Locations$Processopenlineagerunevent,
+      options?: MethodOptions
+    ): GaxiosPromise<Schema$GoogleCloudDatacatalogLineageV1ProcessOpenLineageRunEventResponse>;
+    processOpenLineageRunEvent(
+      params: Params$Resource$Projects$Locations$Processopenlineagerunevent,
+      options: StreamMethodOptions | BodyResponseCallback<Readable>,
+      callback: BodyResponseCallback<Readable>
+    ): void;
+    processOpenLineageRunEvent(
+      params: Params$Resource$Projects$Locations$Processopenlineagerunevent,
+      options:
+        | MethodOptions
+        | BodyResponseCallback<Schema$GoogleCloudDatacatalogLineageV1ProcessOpenLineageRunEventResponse>,
+      callback: BodyResponseCallback<Schema$GoogleCloudDatacatalogLineageV1ProcessOpenLineageRunEventResponse>
+    ): void;
+    processOpenLineageRunEvent(
+      params: Params$Resource$Projects$Locations$Processopenlineagerunevent,
+      callback: BodyResponseCallback<Schema$GoogleCloudDatacatalogLineageV1ProcessOpenLineageRunEventResponse>
+    ): void;
+    processOpenLineageRunEvent(
+      callback: BodyResponseCallback<Schema$GoogleCloudDatacatalogLineageV1ProcessOpenLineageRunEventResponse>
+    ): void;
+    processOpenLineageRunEvent(
+      paramsOrCallback?:
+        | Params$Resource$Projects$Locations$Processopenlineagerunevent
+        | BodyResponseCallback<Schema$GoogleCloudDatacatalogLineageV1ProcessOpenLineageRunEventResponse>
+        | BodyResponseCallback<Readable>,
+      optionsOrCallback?:
+        | MethodOptions
+        | StreamMethodOptions
+        | BodyResponseCallback<Schema$GoogleCloudDatacatalogLineageV1ProcessOpenLineageRunEventResponse>
+        | BodyResponseCallback<Readable>,
+      callback?:
+        | BodyResponseCallback<Schema$GoogleCloudDatacatalogLineageV1ProcessOpenLineageRunEventResponse>
+        | BodyResponseCallback<Readable>
+    ):
+      | void
+      | GaxiosPromise<Schema$GoogleCloudDatacatalogLineageV1ProcessOpenLineageRunEventResponse>
+      | GaxiosPromise<Readable> {
+      let params = (paramsOrCallback ||
+        {}) as Params$Resource$Projects$Locations$Processopenlineagerunevent;
+      let options = (optionsOrCallback || {}) as MethodOptions;
+
+      if (typeof paramsOrCallback === 'function') {
+        callback = paramsOrCallback;
+        params =
+          {} as Params$Resource$Projects$Locations$Processopenlineagerunevent;
+        options = {};
+      }
+
+      if (typeof optionsOrCallback === 'function') {
+        callback = optionsOrCallback;
+        options = {};
+      }
+
+      const rootUrl = options.rootUrl || 'https://datalineage.googleapis.com/';
+      const parameters = {
+        options: Object.assign(
+          {
+            url: (rootUrl + '/v1/{+parent}:processOpenLineageRunEvent').replace(
+              /([^:]\/)\/+/g,
+              '$1'
+            ),
+            method: 'POST',
+          },
+          options
+        ),
+        params,
+        requiredParams: ['parent'],
+        pathParams: ['parent'],
+        context: this.context,
+      };
+      if (callback) {
+        createAPIRequest<Schema$GoogleCloudDatacatalogLineageV1ProcessOpenLineageRunEventResponse>(
+          parameters,
+          callback as BodyResponseCallback<unknown>
+        );
+      } else {
+        return createAPIRequest<Schema$GoogleCloudDatacatalogLineageV1ProcessOpenLineageRunEventResponse>(
+          parameters
+        );
+      }
+    }
+
+    /**
      * Retrieve a list of links connected to a specific asset. Links represent the data flow between **source** (upstream) and **target** (downstream) assets in transformation pipelines. Links are stored in the same project as the Lineage Events that create them. You can retrieve links in every project where you have the `datalineage.events.get` permission. The project provided in the URL is used for Billing and Quota.
      *
      * @param params - Parameters for request
@@ -707,6 +808,22 @@ export namespace datalineage_v1 {
      * Request body metadata
      */
     requestBody?: Schema$GoogleCloudDatacatalogLineageV1BatchSearchLinkProcessesRequest;
+  }
+  export interface Params$Resource$Projects$Locations$Processopenlineagerunevent
+    extends StandardParameters {
+    /**
+     * Required. The name of the project and its location that should own the process, run, and lineage event.
+     */
+    parent?: string;
+    /**
+     * A unique identifier for this request. Restricted to 36 ASCII characters. A random UUID is recommended. This request is idempotent only if a `request_id` is provided.
+     */
+    requestId?: string;
+
+    /**
+     * Request body metadata
+     */
+    requestBody?: Schema$;
   }
   export interface Params$Resource$Projects$Locations$Searchlinks
     extends StandardParameters {
