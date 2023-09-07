@@ -265,6 +265,40 @@ export namespace gkehub_v1alpha {
     version?: string | null;
   }
   /**
+   * **ClusterUpgrade**: The configuration for the fleet-level ClusterUpgrade feature.
+   */
+  export interface Schema$ClusterUpgradeFleetSpec {
+    /**
+     * Allow users to override some properties of each GKE upgrade.
+     */
+    gkeUpgradeOverrides?: Schema$ClusterUpgradeGKEUpgradeOverride[];
+    /**
+     * Required. Post conditions to evaluate to mark an upgrade COMPLETE. Required.
+     */
+    postConditions?: Schema$ClusterUpgradePostConditions;
+    /**
+     * This fleet consumes upgrades that have COMPLETE status code in the upstream fleets. See UpgradeStatus.Code for code definitions. The fleet name should be either fleet project number or id. This is defined as repeated for future proof reasons. Initial implementation will enforce at most one upstream fleet.
+     */
+    upstreamFleets?: string[] | null;
+  }
+  /**
+   * **ClusterUpgrade**: The state for the fleet-level ClusterUpgrade feature.
+   */
+  export interface Schema$ClusterUpgradeFleetState {
+    /**
+     * This fleets whose upstream_fleets contain the current fleet. The fleet name should be either fleet project number or id.
+     */
+    downstreamFleets?: string[] | null;
+    /**
+     * Feature state for GKE clusters.
+     */
+    gkeState?: Schema$ClusterUpgradeGKEUpgradeFeatureState;
+    /**
+     * A list of memberships ignored by the feature. For example, manually upgraded clusters can be ignored if they are newer than the default versions of its release channel. The membership resource is in the format: `projects/{p\}/locations/{l\}/membership/{m\}`.
+     */
+    ignored?: {[key: string]: Schema$ClusterUpgradeIgnoredMembership} | null;
+  }
+  /**
    * GKEUpgrade represents a GKE provided upgrade, e.g., control plane upgrade.
    */
   export interface Schema$ClusterUpgradeGKEUpgrade {
@@ -372,6 +406,10 @@ export namespace gkehub_v1alpha {
    */
   export interface Schema$ClusterUpgradeMembershipState {
     /**
+     * Project number or id of the fleet. It is set only for Memberships that are part of fleet-based Rollout Sequencing.
+     */
+    fleet?: string | null;
+    /**
      * Whether this membership is ignored by the feature. For example, manually upgraded clusters can be ignored if they are newer than the default versions of its release channel.
      */
     ignored?: Schema$ClusterUpgradeIgnoredMembership;
@@ -461,6 +499,10 @@ export namespace gkehub_v1alpha {
      */
     cloudauditlogging?: Schema$CloudAuditLoggingFeatureSpec;
     /**
+     * ClusterUpgrade (fleet-based) feature spec.
+     */
+    clusterupgrade?: Schema$ClusterUpgradeFleetSpec;
+    /**
      * FleetObservability feature spec.
      */
     fleetobservability?: Schema$FleetObservabilityFeatureSpec;
@@ -481,6 +523,10 @@ export namespace gkehub_v1alpha {
      * Appdevexperience specific state.
      */
     appdevexperience?: Schema$AppDevExperienceFeatureState;
+    /**
+     * ClusterUpgrade fleet-level state.
+     */
+    clusterupgrade?: Schema$ClusterUpgradeFleetState;
     /**
      * FleetObservability feature state.
      */
@@ -1883,10 +1929,6 @@ export namespace gkehub_v1alpha {
      * Output only. When the membership binding was deleted.
      */
     deleteTime?: string | null;
-    /**
-     * Whether the membershipbinding is Fleet-wide; true means that this Membership should be bound to all Namespaces in this entire Fleet.
-     */
-    fleet?: boolean | null;
     /**
      * Optional. Labels for this MembershipBinding.
      */

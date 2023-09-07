@@ -1518,10 +1518,6 @@ export namespace gkehub_v1 {
      */
     deleteTime?: string | null;
     /**
-     * Whether the membershipbinding is Fleet-wide; true means that this Membership should be bound to all Namespaces in this entire Fleet.
-     */
-    fleet?: boolean | null;
-    /**
      * Optional. Labels for this MembershipBinding.
      */
     labels?: {[key: string]: string} | null;
