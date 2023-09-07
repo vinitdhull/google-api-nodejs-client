@@ -2835,10 +2835,6 @@ export namespace aiplatform_v1 {
      * Required. Immutable. Type of Feature value.
      */
     valueType?: string | null;
-    /**
-     * The labels with user-defined metadata to organize your versions. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. See https://goo.gl/xmQnxf for more information and examples of labels.
-     */
-    versionLabels?: {[key: string]: string} | null;
   }
   /**
    * A list of historical SnapshotAnalysis or ImportFeaturesAnalysis stats requested by user, sorted by FeatureStatsAnomaly.start_time descending.
@@ -6820,6 +6816,10 @@ export namespace aiplatform_v1 {
    * All parameters related to queuing and scheduling of custom jobs.
    */
   export interface Schema$GoogleCloudAiplatformV1Scheduling {
+    /**
+     * Optional. Indicates if the job should retry for internal errors after the job starts running. If true, overrides `Scheduling.restart_job_on_worker_restart` to false.
+     */
+    disableRetries?: boolean | null;
     /**
      * Restarts the entire CustomJob if a worker gets restarted. This feature can be used by distributed training jobs that are not resilient to workers leaving and joining a job.
      */
