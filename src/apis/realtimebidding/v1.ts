@@ -630,7 +630,7 @@ export namespace realtimebidding_v1 {
     url?: string | null;
   }
   /**
-   * Response for a request to get remarketing tag.
+   * Deprecated. This will be removed in October 2023. For more information, see the release notes: https://developers.google.com/authorized-buyers/apis/relnotes#real-time-bidding-api Response for a request to get remarketing tag.
    */
   export interface Schema$GetRemarketingTagResponse {
     /**
@@ -1119,7 +1119,7 @@ export namespace realtimebidding_v1 {
     normalizedUrl?: string | null;
   }
   /**
-   * Represents the URL restriction (for the URL captured by the pixel callback) for a user list.
+   * Deprecated. This will be removed in October 2023. For more information, see the release notes: https://developers.google.com/authorized-buyers/apis/relnotes#real-time-bidding-api Represents the URL restriction (for the URL captured by the pixel callback) for a user list.
    */
   export interface Schema$UrlRestriction {
     /**
@@ -1164,7 +1164,7 @@ export namespace realtimebidding_v1 {
      */
     status?: string | null;
     /**
-     * Required. The URL restriction for the user list.
+     * Required. Deprecated. This will be removed in October 2023. For more information, see the release notes: https://developers.google.com/authorized-buyers/apis/relnotes#real-time-bidding-api The URL restriction for the user list.
      */
     urlRestriction?: Schema$UrlRestriction;
   }
@@ -3862,7 +3862,7 @@ export namespace realtimebidding_v1 {
     }
 
     /**
-     * Gets remarketing tag for a buyer. A remarketing tag is a piece of JavaScript code that can be placed on a web page. When a user visits a page containing a remarketing tag, Google adds the user to a user list.
+     * Deprecated. This will be removed in October 2023. For more information, see the release notes: https://developers.google.com/authorized-buyers/apis/relnotes#real-time-bidding-api Gets remarketing tag for a buyer. A remarketing tag is a piece of JavaScript code that can be placed on a web page. When a user visits a page containing a remarketing tag, Google adds the user to a user list.
      *
      * @param params - Parameters for request
      * @param options - Optionally override request options, such as `url`, `method`, and `encoding`.
@@ -4754,7 +4754,7 @@ export namespace realtimebidding_v1 {
     }
 
     /**
-     * Gets remarketing tag for a buyer. A remarketing tag is a piece of JavaScript code that can be placed on a web page. When a user visits a page containing a remarketing tag, Google adds the user to a user list.
+     * Deprecated. This will be removed in October 2023. For more information, see the release notes: https://developers.google.com/authorized-buyers/apis/relnotes#real-time-bidding-api Gets remarketing tag for a buyer. A remarketing tag is a piece of JavaScript code that can be placed on a web page. When a user visits a page containing a remarketing tag, Google adds the user to a user list.
      *
      * @param params - Parameters for request
      * @param options - Optionally override request options, such as `url`, `method`, and `encoding`.
