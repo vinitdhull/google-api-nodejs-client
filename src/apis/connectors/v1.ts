@@ -545,6 +545,10 @@ export namespace connectors_v1 {
    */
   export interface Schema$ConnectorInfraConfig {
     /**
+     * HPA autoscaling config.
+     */
+    hpaConfig?: Schema$HPAConfig;
+    /**
      * Max QPS supported for internal requests originating from Connd.
      */
     internalclientRatelimitThreshold?: string | null;
@@ -552,6 +556,14 @@ export namespace connectors_v1 {
      * Max QPS supported by the connector version before throttling of requests.
      */
     ratelimitThreshold?: string | null;
+    /**
+     * System resource limits.
+     */
+    resourceLimits?: Schema$ResourceLimits;
+    /**
+     * System resource requests.
+     */
+    resourceRequests?: Schema$ResourceRequests;
   }
   /**
    * Log configuration for the connection.
@@ -640,6 +652,10 @@ export namespace connectors_v1 {
    */
   export interface Schema$ConnectorVersionInfraConfig {
     /**
+     * Output only. HPA autoscaling config.
+     */
+    hpaConfig?: Schema$HPAConfig;
+    /**
      * Output only. Max QPS supported for internal requests originating from Connd.
      */
     internalclientRatelimitThreshold?: string | null;
@@ -647,6 +663,14 @@ export namespace connectors_v1 {
      * Output only. Max QPS supported by the connector version before throttling of requests.
      */
     ratelimitThreshold?: string | null;
+    /**
+     * Output only. System resource limits.
+     */
+    resourceLimits?: Schema$ResourceLimits;
+    /**
+     * Output only. System resource requests.
+     */
+    resourceRequests?: Schema$ResourceRequests;
   }
   export interface Schema$Destination {
     /**
@@ -1147,6 +1171,19 @@ export namespace connectors_v1 {
      * Value of Header.
      */
     value?: string | null;
+  }
+  /**
+   * Autoscaling config for connector deployment system metrics.
+   */
+  export interface Schema$HPAConfig {
+    /**
+     * Output only. Percent CPU utilization where HPA triggers autoscaling.
+     */
+    cpuUtilizationThreshold?: string | null;
+    /**
+     * Output only. Percent Memory utilization where HPA triggers autoscaling.
+     */
+    memoryUtilizationThreshold?: string | null;
   }
   /**
    * Metadata of an input parameter.
@@ -1682,6 +1719,32 @@ export namespace connectors_v1 {
      * Different types of resource supported.
      */
     type?: string | null;
+  }
+  /**
+   * Resource limits defined for connection pods of a given connector type.
+   */
+  export interface Schema$ResourceLimits {
+    /**
+     * Output only. CPU limit.
+     */
+    cpu?: string | null;
+    /**
+     * Output only. Memory limit.
+     */
+    memory?: string | null;
+  }
+  /**
+   * Resource requests defined for connection pods of a given connector type.
+   */
+  export interface Schema$ResourceRequests {
+    /**
+     * Output only. CPU request.
+     */
+    cpu?: string | null;
+    /**
+     * Output only. Memory request.
+     */
+    memory?: string | null;
   }
   /**
    * Metadata of result field.

@@ -321,9 +321,28 @@ export namespace connectors_v2 {
    */
   export interface Schema$Query {
     /**
+     * Sets the limit for the maximum number of rows returned after the query execution.
+     */
+    maxRows?: string | null;
+    /**
      * Required. Sql query to execute.
      */
     query?: string | null;
+    /**
+     * In the struct, the value corresponds to the value of query parameter and date type corresponds to the date type of the query parameter.
+     */
+    queryParameters?: Schema$QueryParameter[];
+    /**
+     * Sets the number of seconds the driver will wait for a query to execute.
+     */
+    timeout?: string | null;
+  }
+  /**
+   * Query parameter definition
+   */
+  export interface Schema$QueryParameter {
+    dataType?: string | null;
+    value?: string | null;
   }
   export interface Schema$Reference {
     /**
