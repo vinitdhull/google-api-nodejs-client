@@ -276,6 +276,7 @@
     "src/apis/migrationcenter": {},
     "src/apis/contactcenteraiplatform": {},
     "src/apis/cloudbilling": {},
-    "src/apis/metastore": {}
+    "src/apis/metastore": {},
+    "src/apis/playgrouping": {}
   }
 }
