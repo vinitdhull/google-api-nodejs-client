@@ -745,7 +745,7 @@ export namespace dataproc_v1 {
    */
   export interface Schema$ExecutionConfig {
     /**
-     * Optional. Applies to sessions only. The duration to keep the session alive while it's idling. Exceeding this threshold causes the session to terminate. This field cannot be set on a batch workload. Minimum value is 10 minutes; maximum value is 14 days (see JSON representation of Duration (https://developers.google.com/protocol-buffers/docs/proto3#json)). Defaults to 4 hours if not set. If both ttl and idle_ttl are specified for an interactive session, the conditions are treated as OR conditions: the workload will be terminated when it has been idle for idle_ttl or when ttl has been exceeded, whichever occurs first.
+     * Optional. Applies to sessions only. The duration to keep the session alive while it's idling. Exceeding this threshold causes the session to terminate. This field cannot be set on a batch workload. Minimum value is 10 minutes; maximum value is 14 days (see JSON representation of Duration (https://developers.google.com/protocol-buffers/docs/proto3#json)). Defaults to 1 hour if not set. If both ttl and idle_ttl are specified for an interactive session, the conditions are treated as OR conditions: the workload will be terminated when it has been idle for idle_ttl or when ttl has been exceeded, whichever occurs first.
      */
     idleTtl?: string | null;
     /**
@@ -1109,6 +1109,19 @@ export namespace dataproc_v1 {
     credentialsCiphertext?: string | null;
   }
   /**
+   * A request to inject credentials to a session.
+   */
+  export interface Schema$InjectSessionCredentialsRequest {
+    /**
+     * Required. The encrypted credentials being injected in to the session.The client is responsible for encrypting the credentials in a way that is supported by the session.A wrapped value is used here so that the actual contents of the encrypted credentials are not written to audit logs.
+     */
+    credentialsCiphertext?: string | null;
+    /**
+     * Optional. A unique ID used to identify the request. If the service receives two TerminateSessionRequest (https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.TerminateSessionRequest)s with the same ID, the first request is ignored to ensure the most recent credentials are injected.Recommendation: Set this value to a UUID (https://en.wikipedia.org/wiki/Universally_unique_identifier).The value must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and hyphens (-). The maximum length is 40 characters.
+     */
+    requestId?: string | null;
+  }
+  /**
    * Configuration for the size bounds of an instance group, including its proportional size to other groups.
    */
   export interface Schema$InstanceGroupAutoscalingPolicyConfig {
@@ -1408,6 +1421,19 @@ export namespace dataproc_v1 {
     substate?: string | null;
   }
   /**
+   * Jupyter configuration for an interactive session.
+   */
+  export interface Schema$JupyterConfig {
+    /**
+     * Optional. Display name, shown in the Jupyter kernelspec card.
+     */
+    displayName?: string | null;
+    /**
+     * Optional. Kernel
+     */
+    kernel?: string | null;
+  }
+  /**
    * Specifies Kerberos related configuration.
    */
   export interface Schema$KerberosConfig {
@@ -1587,6 +1613,32 @@ export namespace dataproc_v1 {
      * A list of operations that matches the specified filter in the request.
      */
     operations?: Schema$Operation[];
+  }
+  /**
+   * A list of interactive sessions.
+   */
+  export interface Schema$ListSessionsResponse {
+    /**
+     * A token, which can be sent as page_token to retrieve the next page. If this field is omitted, there are no subsequent pages.
+     */
+    nextPageToken?: string | null;
+    /**
+     * Output only. The sessions from the specified collection.
+     */
+    sessions?: Schema$Session[];
+  }
+  /**
+   * A list of session templates.
+   */
+  export interface Schema$ListSessionTemplatesResponse {
+    /**
+     * A token, which can be sent as page_token to retrieve the next page. If this field is omitted, there are no subsequent pages.
+     */
+    nextPageToken?: string | null;
+    /**
+     * Output only. Session template list
+     */
+    sessionTemplates?: Schema$SessionTemplate[];
   }
   /**
    * A response to a request to list workflow templates in a project.
@@ -2162,6 +2214,71 @@ export namespace dataproc_v1 {
     kerberosConfig?: Schema$KerberosConfig;
   }
   /**
+   * A representation of a session in the service. Next ID: 18
+   */
+  export interface Schema$Session {
+    /**
+     * Output only. The time when the session was created.
+     */
+    createTime?: string | null;
+    /**
+     * Output only. The email address of the user who created the session.
+     */
+    creator?: string | null;
+    /**
+     * Optional. Environment configuration for the session execution.
+     */
+    environmentConfig?: Schema$EnvironmentConfig;
+    /**
+     * Optional. Jupyter session config.
+     */
+    jupyterSession?: Schema$JupyterConfig;
+    /**
+     * Optional. The labels to associate with this session. Label keys must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). Label values may be empty, but, if present, must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). No more than 32 labels can be associated with a session.
+     */
+    labels?: {[key: string]: string} | null;
+    /**
+     * Required. The resource name of the session.
+     */
+    name?: string | null;
+    /**
+     * Optional. Runtime configuration for the session execution.
+     */
+    runtimeConfig?: Schema$RuntimeConfig;
+    /**
+     * Output only. Runtime information about session execution.
+     */
+    runtimeInfo?: Schema$RuntimeInfo;
+    /**
+     * Optional. The session template used by the session.Only resource names including project ID and location are valid.Example: * https://www.googleapis.com/compute/v1/projects/[project_id]/locations/[dataproc_region]/sessionTemplates/[template_id] * projects/[project_id]/locations/[dataproc_region]/sessionTemplates/[template_id]Note that the template must be in the same project and Dataproc region.
+     */
+    sessionTemplate?: string | null;
+    /**
+     * Output only. A state of the session.
+     */
+    state?: string | null;
+    /**
+     * Output only. Historical state information for the session.
+     */
+    stateHistory?: Schema$SessionStateHistory[];
+    /**
+     * Output only. Session state details, such as a failure description if the state is FAILED.
+     */
+    stateMessage?: string | null;
+    /**
+     * Output only. The time when the session entered a current state.
+     */
+    stateTime?: string | null;
+    /**
+     * Optional. The email address of the user who owns the session.
+     */
+    user?: string | null;
+    /**
+     * Output only. A session UUID (Unique Universal Identifier). The service generates this value when it creates the session.
+     */
+    uuid?: string | null;
+  }
+  /**
    * Metadata describing the Session operation.
    */
   export interface Schema$SessionOperationMetadata {
@@ -2197,6 +2314,64 @@ export namespace dataproc_v1 {
      * Warnings encountered during operation execution.
      */
     warnings?: string[] | null;
+  }
+  /**
+   * Historical state information.
+   */
+  export interface Schema$SessionStateHistory {
+    /**
+     * Output only. The state of the session at this point in history.
+     */
+    state?: string | null;
+    /**
+     * Output only. Details about the state at this point in history.
+     */
+    stateMessage?: string | null;
+    /**
+     * Output only. The time when the session entered the historical state.
+     */
+    stateStartTime?: string | null;
+  }
+  /**
+   * A representation of a session template in the service. Next ID: 12
+   */
+  export interface Schema$SessionTemplate {
+    /**
+     * Output only. The time when the template was created.
+     */
+    createTime?: string | null;
+    /**
+     * Output only. The email address of the user who created the template.
+     */
+    creator?: string | null;
+    /**
+     * Optional. Brief description of the template.
+     */
+    description?: string | null;
+    /**
+     * Optional. Environment configuration for session execution.
+     */
+    environmentConfig?: Schema$EnvironmentConfig;
+    /**
+     * Optional. Jupyter session config.
+     */
+    jupyterSession?: Schema$JupyterConfig;
+    /**
+     * Optional. The labels to associate with sessions created using this template. Label keys must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). Label values may be empty, but, if present, must contain 1 to 63 characters, and must conform to RFC 1035 (https://www.ietf.org/rfc/rfc1035.txt). No more than 32 labels can be associated with a session.
+     */
+    labels?: {[key: string]: string} | null;
+    /**
+     * Required. The resource name of the session template.
+     */
+    name?: string | null;
+    /**
+     * Optional. Runtime configuration for session execution.
+     */
+    runtimeConfig?: Schema$RuntimeConfig;
+    /**
+     * Output only. The time template was last updated.
+     */
+    updateTime?: string | null;
   }
   /**
    * Request message for SetIamPolicy method.
@@ -2532,6 +2707,15 @@ export namespace dataproc_v1 {
     validation?: Schema$ParameterValidation;
   }
   /**
+   * A request to terminate an interactive session.
+   */
+  export interface Schema$TerminateSessionRequest {
+    /**
+     * Optional. A unique ID used to identify the request. If the service receives two TerminateSessionRequest (https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.TerminateSessionRequest)s with the same ID, the second request is ignored.Recommendation: Set this value to a UUID (https://en.wikipedia.org/wiki/Universally_unique_identifier).The value must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and hyphens (-). The maximum length is 40 characters.
+     */
+    requestId?: string | null;
+  }
+  /**
    * Request message for TestIamPermissions method.
    */
   export interface Schema$TestIamPermissionsRequest {
@@ -2834,6 +3018,8 @@ export namespace dataproc_v1 {
     autoscalingPolicies: Resource$Projects$Locations$Autoscalingpolicies;
     batches: Resource$Projects$Locations$Batches;
     operations: Resource$Projects$Locations$Operations;
+    sessions: Resource$Projects$Locations$Sessions;
+    sessionTemplates: Resource$Projects$Locations$Sessiontemplates;
     workflowTemplates: Resource$Projects$Locations$Workflowtemplates;
     constructor(context: APIRequestContext) {
       this.context = context;
@@ -2841,6 +3027,10 @@ export namespace dataproc_v1 {
         new Resource$Projects$Locations$Autoscalingpolicies(this.context);
       this.batches = new Resource$Projects$Locations$Batches(this.context);
       this.operations = new Resource$Projects$Locations$Operations(
+        this.context
+      );
+      this.sessions = new Resource$Projects$Locations$Sessions(this.context);
+      this.sessionTemplates = new Resource$Projects$Locations$Sessiontemplates(
         this.context
       );
       this.workflowTemplates =
@@ -4462,6 +4652,1120 @@ export namespace dataproc_v1 {
      * The standard list page token.
      */
     pageToken?: string;
+  }
+
+  export class Resource$Projects$Locations$Sessions {
+    context: APIRequestContext;
+    constructor(context: APIRequestContext) {
+      this.context = context;
+    }
+
+    /**
+     * Create an interactive session asynchronously.
+     *
+     * @param params - Parameters for request
+     * @param options - Optionally override request options, such as `url`, `method`, and `encoding`.
+     * @param callback - Optional callback that handles the response.
+     * @returns A promise if used with async/await, or void if used with a callback.
+     */
+    create(
+      params: Params$Resource$Projects$Locations$Sessions$Create,
+      options: StreamMethodOptions
+    ): GaxiosPromise<Readable>;
+    create(
+      params?: Params$Resource$Projects$Locations$Sessions$Create,
+      options?: MethodOptions
+    ): GaxiosPromise<Schema$Operation>;
+    create(
+      params: Params$Resource$Projects$Locations$Sessions$Create,
+      options: StreamMethodOptions | BodyResponseCallback<Readable>,
+      callback: BodyResponseCallback<Readable>
+    ): void;
+    create(
+      params: Params$Resource$Projects$Locations$Sessions$Create,
+      options: MethodOptions | BodyResponseCallback<Schema$Operation>,
+      callback: BodyResponseCallback<Schema$Operation>
+    ): void;
+    create(
+      params: Params$Resource$Projects$Locations$Sessions$Create,
+      callback: BodyResponseCallback<Schema$Operation>
+    ): void;
+    create(callback: BodyResponseCallback<Schema$Operation>): void;
+    create(
+      paramsOrCallback?:
+        | Params$Resource$Projects$Locations$Sessions$Create
+        | BodyResponseCallback<Schema$Operation>
+        | BodyResponseCallback<Readable>,
+      optionsOrCallback?:
+        | MethodOptions
+        | StreamMethodOptions
+        | BodyResponseCallback<Schema$Operation>
+        | BodyResponseCallback<Readable>,
+      callback?:
+        | BodyResponseCallback<Schema$Operation>
+        | BodyResponseCallback<Readable>
+    ): void | GaxiosPromise<Schema$Operation> | GaxiosPromise<Readable> {
+      let params = (paramsOrCallback ||
+        {}) as Params$Resource$Projects$Locations$Sessions$Create;
+      let options = (optionsOrCallback || {}) as MethodOptions;
+
+      if (typeof paramsOrCallback === 'function') {
+        callback = paramsOrCallback;
+        params = {} as Params$Resource$Projects$Locations$Sessions$Create;
+        options = {};
+      }
+
+      if (typeof optionsOrCallback === 'function') {
+        callback = optionsOrCallback;
+        options = {};
+      }
+
+      const rootUrl = options.rootUrl || 'https://dataproc.googleapis.com/';
+      const parameters = {
+        options: Object.assign(
+          {
+            url: (rootUrl + '/v1/{+parent}/sessions').replace(
+              /([^:]\/)\/+/g,
+              '$1'
+            ),
+            method: 'POST',
+          },
+          options
+        ),
+        params,
+        requiredParams: ['parent'],
+        pathParams: ['parent'],
+        context: this.context,
+      };
+      if (callback) {
+        createAPIRequest<Schema$Operation>(
+          parameters,
+          callback as BodyResponseCallback<unknown>
+        );
+      } else {
+        return createAPIRequest<Schema$Operation>(parameters);
+      }
+    }
+
+    /**
+     * Deletes the interactive session resource. If the session is not in terminal state, it will be terminated and deleted afterwards.
+     *
+     * @param params - Parameters for request
+     * @param options - Optionally override request options, such as `url`, `method`, and `encoding`.
+     * @param callback - Optional callback that handles the response.
+     * @returns A promise if used with async/await, or void if used with a callback.
+     */
+    delete(
+      params: Params$Resource$Projects$Locations$Sessions$Delete,
+      options: StreamMethodOptions
+    ): GaxiosPromise<Readable>;
+    delete(
+      params?: Params$Resource$Projects$Locations$Sessions$Delete,
+      options?: MethodOptions
+    ): GaxiosPromise<Schema$Operation>;
+    delete(
+      params: Params$Resource$Projects$Locations$Sessions$Delete,
+      options: StreamMethodOptions | BodyResponseCallback<Readable>,
+      callback: BodyResponseCallback<Readable>
+    ): void;
+    delete(
+      params: Params$Resource$Projects$Locations$Sessions$Delete,
+      options: MethodOptions | BodyResponseCallback<Schema$Operation>,
+      callback: BodyResponseCallback<Schema$Operation>
+    ): void;
+    delete(
+      params: Params$Resource$Projects$Locations$Sessions$Delete,
+      callback: BodyResponseCallback<Schema$Operation>
+    ): void;
+    delete(callback: BodyResponseCallback<Schema$Operation>): void;
+    delete(
+      paramsOrCallback?:
+        | Params$Resource$Projects$Locations$Sessions$Delete
+        | BodyResponseCallback<Schema$Operation>
+        | BodyResponseCallback<Readable>,
+      optionsOrCallback?:
+        | MethodOptions
+        | StreamMethodOptions
+        | BodyResponseCallback<Schema$Operation>
+        | BodyResponseCallback<Readable>,
+      callback?:
+        | BodyResponseCallback<Schema$Operation>
+        | BodyResponseCallback<Readable>
+    ): void | GaxiosPromise<Schema$Operation> | GaxiosPromise<Readable> {
+      let params = (paramsOrCallback ||
+        {}) as Params$Resource$Projects$Locations$Sessions$Delete;
+      let options = (optionsOrCallback || {}) as MethodOptions;
+
+      if (typeof paramsOrCallback === 'function') {
+        callback = paramsOrCallback;
+        params = {} as Params$Resource$Projects$Locations$Sessions$Delete;
+        options = {};
+      }
+
+      if (typeof optionsOrCallback === 'function') {
+        callback = optionsOrCallback;
+        options = {};
+      }
+
+      const rootUrl = options.rootUrl || 'https://dataproc.googleapis.com/';
+      const parameters = {
+        options: Object.assign(
+          {
+            url: (rootUrl + '/v1/{+name}').replace(/([^:]\/)\/+/g, '$1'),
+            method: 'DELETE',
+          },
+          options
+        ),
+        params,
+        requiredParams: ['name'],
+        pathParams: ['name'],
+        context: this.context,
+      };
+      if (callback) {
+        createAPIRequest<Schema$Operation>(
+          parameters,
+          callback as BodyResponseCallback<unknown>
+        );
+      } else {
+        return createAPIRequest<Schema$Operation>(parameters);
+      }
+    }
+
+    /**
+     * Gets the resource representation for an interactive session.
+     *
+     * @param params - Parameters for request
+     * @param options - Optionally override request options, such as `url`, `method`, and `encoding`.
+     * @param callback - Optional callback that handles the response.
+     * @returns A promise if used with async/await, or void if used with a callback.
+     */
+    get(
+      params: Params$Resource$Projects$Locations$Sessions$Get,
+      options: StreamMethodOptions
+    ): GaxiosPromise<Readable>;
+    get(
+      params?: Params$Resource$Projects$Locations$Sessions$Get,
+      options?: MethodOptions
+    ): GaxiosPromise<Schema$Session>;
+    get(
+      params: Params$Resource$Projects$Locations$Sessions$Get,
+      options: StreamMethodOptions | BodyResponseCallback<Readable>,
+      callback: BodyResponseCallback<Readable>
+    ): void;
+    get(
+      params: Params$Resource$Projects$Locations$Sessions$Get,
+      options: MethodOptions | BodyResponseCallback<Schema$Session>,
+      callback: BodyResponseCallback<Schema$Session>
+    ): void;
+    get(
+      params: Params$Resource$Projects$Locations$Sessions$Get,
+      callback: BodyResponseCallback<Schema$Session>
+    ): void;
+    get(callback: BodyResponseCallback<Schema$Session>): void;
+    get(
+      paramsOrCallback?:
+        | Params$Resource$Projects$Locations$Sessions$Get
+        | BodyResponseCallback<Schema$Session>
+        | BodyResponseCallback<Readable>,
+      optionsOrCallback?:
+        | MethodOptions
+        | StreamMethodOptions
+        | BodyResponseCallback<Schema$Session>
+        | BodyResponseCallback<Readable>,
+      callback?:
+        | BodyResponseCallback<Schema$Session>
+        | BodyResponseCallback<Readable>
+    ): void | GaxiosPromise<Schema$Session> | GaxiosPromise<Readable> {
+      let params = (paramsOrCallback ||
+        {}) as Params$Resource$Projects$Locations$Sessions$Get;
+      let options = (optionsOrCallback || {}) as MethodOptions;
+
+      if (typeof paramsOrCallback === 'function') {
+        callback = paramsOrCallback;
+        params = {} as Params$Resource$Projects$Locations$Sessions$Get;
+        options = {};
+      }
+
+      if (typeof optionsOrCallback === 'function') {
+        callback = optionsOrCallback;
+        options = {};
+      }
+
+      const rootUrl = options.rootUrl || 'https://dataproc.googleapis.com/';
+      const parameters = {
+        options: Object.assign(
+          {
+            url: (rootUrl + '/v1/{+name}').replace(/([^:]\/)\/+/g, '$1'),
+            method: 'GET',
+          },
+          options
+        ),
+        params,
+        requiredParams: ['name'],
+        pathParams: ['name'],
+        context: this.context,
+      };
+      if (callback) {
+        createAPIRequest<Schema$Session>(
+          parameters,
+          callback as BodyResponseCallback<unknown>
+        );
+      } else {
+        return createAPIRequest<Schema$Session>(parameters);
+      }
+    }
+
+    /**
+     * Inject Credentials in the interactive session.
+     *
+     * @param params - Parameters for request
+     * @param options - Optionally override request options, such as `url`, `method`, and `encoding`.
+     * @param callback - Optional callback that handles the response.
+     * @returns A promise if used with async/await, or void if used with a callback.
+     */
+    injectCredentials(
+      params: Params$Resource$Projects$Locations$Sessions$Injectcredentials,
+      options: StreamMethodOptions
+    ): GaxiosPromise<Readable>;
+    injectCredentials(
+      params?: Params$Resource$Projects$Locations$Sessions$Injectcredentials,
+      options?: MethodOptions
+    ): GaxiosPromise<Schema$Operation>;
+    injectCredentials(
+      params: Params$Resource$Projects$Locations$Sessions$Injectcredentials,
+      options: StreamMethodOptions | BodyResponseCallback<Readable>,
+      callback: BodyResponseCallback<Readable>
+    ): void;
+    injectCredentials(
+      params: Params$Resource$Projects$Locations$Sessions$Injectcredentials,
+      options: MethodOptions | BodyResponseCallback<Schema$Operation>,
+      callback: BodyResponseCallback<Schema$Operation>
+    ): void;
+    injectCredentials(
+      params: Params$Resource$Projects$Locations$Sessions$Injectcredentials,
+      callback: BodyResponseCallback<Schema$Operation>
+    ): void;
+    injectCredentials(callback: BodyResponseCallback<Schema$Operation>): void;
+    injectCredentials(
+      paramsOrCallback?:
+        | Params$Resource$Projects$Locations$Sessions$Injectcredentials
+        | BodyResponseCallback<Schema$Operation>
+        | BodyResponseCallback<Readable>,
+      optionsOrCallback?:
+        | MethodOptions
+        | StreamMethodOptions
+        | BodyResponseCallback<Schema$Operation>
+        | BodyResponseCallback<Readable>,
+      callback?:
+        | BodyResponseCallback<Schema$Operation>
+        | BodyResponseCallback<Readable>
+    ): void | GaxiosPromise<Schema$Operation> | GaxiosPromise<Readable> {
+      let params = (paramsOrCallback ||
+        {}) as Params$Resource$Projects$Locations$Sessions$Injectcredentials;
+      let options = (optionsOrCallback || {}) as MethodOptions;
+
+      if (typeof paramsOrCallback === 'function') {
+        callback = paramsOrCallback;
+        params =
+          {} as Params$Resource$Projects$Locations$Sessions$Injectcredentials;
+        options = {};
+      }
+
+      if (typeof optionsOrCallback === 'function') {
+        callback = optionsOrCallback;
+        options = {};
+      }
+
+      const rootUrl = options.rootUrl || 'https://dataproc.googleapis.com/';
+      const parameters = {
+        options: Object.assign(
+          {
+            url: (rootUrl + '/v1/{+session}:injectCredentials').replace(
+              /([^:]\/)\/+/g,
+              '$1'
+            ),
+            method: 'POST',
+          },
+          options
+        ),
+        params,
+        requiredParams: ['session'],
+        pathParams: ['session'],
+        context: this.context,
+      };
+      if (callback) {
+        createAPIRequest<Schema$Operation>(
+          parameters,
+          callback as BodyResponseCallback<unknown>
+        );
+      } else {
+        return createAPIRequest<Schema$Operation>(parameters);
+      }
+    }
+
+    /**
+     * Lists interactive sessions.
+     *
+     * @param params - Parameters for request
+     * @param options - Optionally override request options, such as `url`, `method`, and `encoding`.
+     * @param callback - Optional callback that handles the response.
+     * @returns A promise if used with async/await, or void if used with a callback.
+     */
+    list(
+      params: Params$Resource$Projects$Locations$Sessions$List,
+      options: StreamMethodOptions
+    ): GaxiosPromise<Readable>;
+    list(
+      params?: Params$Resource$Projects$Locations$Sessions$List,
+      options?: MethodOptions
+    ): GaxiosPromise<Schema$ListSessionsResponse>;
+    list(
+      params: Params$Resource$Projects$Locations$Sessions$List,
+      options: StreamMethodOptions | BodyResponseCallback<Readable>,
+      callback: BodyResponseCallback<Readable>
+    ): void;
+    list(
+      params: Params$Resource$Projects$Locations$Sessions$List,
+      options:
+        | MethodOptions
+        | BodyResponseCallback<Schema$ListSessionsResponse>,
+      callback: BodyResponseCallback<Schema$ListSessionsResponse>
+    ): void;
+    list(
+      params: Params$Resource$Projects$Locations$Sessions$List,
+      callback: BodyResponseCallback<Schema$ListSessionsResponse>
+    ): void;
+    list(callback: BodyResponseCallback<Schema$ListSessionsResponse>): void;
+    list(
+      paramsOrCallback?:
+        | Params$Resource$Projects$Locations$Sessions$List
+        | BodyResponseCallback<Schema$ListSessionsResponse>
+        | BodyResponseCallback<Readable>,
+      optionsOrCallback?:
+        | MethodOptions
+        | StreamMethodOptions
+        | BodyResponseCallback<Schema$ListSessionsResponse>
+        | BodyResponseCallback<Readable>,
+      callback?:
+        | BodyResponseCallback<Schema$ListSessionsResponse>
+        | BodyResponseCallback<Readable>
+    ):
+      | void
+      | GaxiosPromise<Schema$ListSessionsResponse>
+      | GaxiosPromise<Readable> {
+      let params = (paramsOrCallback ||
+        {}) as Params$Resource$Projects$Locations$Sessions$List;
+      let options = (optionsOrCallback || {}) as MethodOptions;
+
+      if (typeof paramsOrCallback === 'function') {
+        callback = paramsOrCallback;
+        params = {} as Params$Resource$Projects$Locations$Sessions$List;
+        options = {};
+      }
+
+      if (typeof optionsOrCallback === 'function') {
+        callback = optionsOrCallback;
+        options = {};
+      }
+
+      const rootUrl = options.rootUrl || 'https://dataproc.googleapis.com/';
+      const parameters = {
+        options: Object.assign(
+          {
+            url: (rootUrl + '/v1/{+parent}/sessions').replace(
+              /([^:]\/)\/+/g,
+              '$1'
+            ),
+            method: 'GET',
+          },
+          options
+        ),
+        params,
+        requiredParams: ['parent'],
+        pathParams: ['parent'],
+        context: this.context,
+      };
+      if (callback) {
+        createAPIRequest<Schema$ListSessionsResponse>(
+          parameters,
+          callback as BodyResponseCallback<unknown>
+        );
+      } else {
+        return createAPIRequest<Schema$ListSessionsResponse>(parameters);
+      }
+    }
+
+    /**
+     * Terminates the interactive session.
+     *
+     * @param params - Parameters for request
+     * @param options - Optionally override request options, such as `url`, `method`, and `encoding`.
+     * @param callback - Optional callback that handles the response.
+     * @returns A promise if used with async/await, or void if used with a callback.
+     */
+    terminate(
+      params: Params$Resource$Projects$Locations$Sessions$Terminate,
+      options: StreamMethodOptions
+    ): GaxiosPromise<Readable>;
+    terminate(
+      params?: Params$Resource$Projects$Locations$Sessions$Terminate,
+      options?: MethodOptions
+    ): GaxiosPromise<Schema$Operation>;
+    terminate(
+      params: Params$Resource$Projects$Locations$Sessions$Terminate,
+      options: StreamMethodOptions | BodyResponseCallback<Readable>,
+      callback: BodyResponseCallback<Readable>
+    ): void;
+    terminate(
+      params: Params$Resource$Projects$Locations$Sessions$Terminate,
+      options: MethodOptions | BodyResponseCallback<Schema$Operation>,
+      callback: BodyResponseCallback<Schema$Operation>
+    ): void;
+    terminate(
+      params: Params$Resource$Projects$Locations$Sessions$Terminate,
+      callback: BodyResponseCallback<Schema$Operation>
+    ): void;
+    terminate(callback: BodyResponseCallback<Schema$Operation>): void;
+    terminate(
+      paramsOrCallback?:
+        | Params$Resource$Projects$Locations$Sessions$Terminate
+        | BodyResponseCallback<Schema$Operation>
+        | BodyResponseCallback<Readable>,
+      optionsOrCallback?:
+        | MethodOptions
+        | StreamMethodOptions
+        | BodyResponseCallback<Schema$Operation>
+        | BodyResponseCallback<Readable>,
+      callback?:
+        | BodyResponseCallback<Schema$Operation>
+        | BodyResponseCallback<Readable>
+    ): void | GaxiosPromise<Schema$Operation> | GaxiosPromise<Readable> {
+      let params = (paramsOrCallback ||
+        {}) as Params$Resource$Projects$Locations$Sessions$Terminate;
+      let options = (optionsOrCallback || {}) as MethodOptions;
+
+      if (typeof paramsOrCallback === 'function') {
+        callback = paramsOrCallback;
+        params = {} as Params$Resource$Projects$Locations$Sessions$Terminate;
+        options = {};
+      }
+
+      if (typeof optionsOrCallback === 'function') {
+        callback = optionsOrCallback;
+        options = {};
+      }
+
+      const rootUrl = options.rootUrl || 'https://dataproc.googleapis.com/';
+      const parameters = {
+        options: Object.assign(
+          {
+            url: (rootUrl + '/v1/{+name}:terminate').replace(
+              /([^:]\/)\/+/g,
+              '$1'
+            ),
+            method: 'POST',
+          },
+          options
+        ),
+        params,
+        requiredParams: ['name'],
+        pathParams: ['name'],
+        context: this.context,
+      };
+      if (callback) {
+        createAPIRequest<Schema$Operation>(
+          parameters,
+          callback as BodyResponseCallback<unknown>
+        );
+      } else {
+        return createAPIRequest<Schema$Operation>(parameters);
+      }
+    }
+  }
+
+  export interface Params$Resource$Projects$Locations$Sessions$Create
+    extends StandardParameters {
+    /**
+     * Required. The parent resource where this session will be created.
+     */
+    parent?: string;
+    /**
+     * Optional. A unique ID used to identify the request. If the service receives two CreateSessionRequest (https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.CreateSessionRequest)s with the same ID, the second request is ignored and the first Session is created and stored in the backend is returned.Recommendation: Set this value to a UUID (https://en.wikipedia.org/wiki/Universally_unique_identifier).The value must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and hyphens (-). The maximum length is 40 characters.
+     */
+    requestId?: string;
+    /**
+     * Required. The ID to use for the session, which becomes the final component of the session's resource name.This value must be 4-63 characters. Valid characters are /a-z-/.
+     */
+    sessionId?: string;
+
+    /**
+     * Request body metadata
+     */
+    requestBody?: Schema$Session;
+  }
+  export interface Params$Resource$Projects$Locations$Sessions$Delete
+    extends StandardParameters {
+    /**
+     * Required. The name of the session resource to delete.
+     */
+    name?: string;
+    /**
+     * Optional. A unique ID used to identify the request. If the service receives two DeleteSessionRequest (https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.DeleteSessionRequest)s with the same ID, the second request is ignored.Recommendation: Set this value to a UUID (https://en.wikipedia.org/wiki/Universally_unique_identifier).The value must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and hyphens (-). The maximum length is 40 characters.
+     */
+    requestId?: string;
+  }
+  export interface Params$Resource$Projects$Locations$Sessions$Get
+    extends StandardParameters {
+    /**
+     * Required. The name of the session to retrieve.
+     */
+    name?: string;
+  }
+  export interface Params$Resource$Projects$Locations$Sessions$Injectcredentials
+    extends StandardParameters {
+    /**
+     * Required. The name of the session resource to inject credentials to.
+     */
+    session?: string;
+
+    /**
+     * Request body metadata
+     */
+    requestBody?: Schema$InjectSessionCredentialsRequest;
+  }
+  export interface Params$Resource$Projects$Locations$Sessions$List
+    extends StandardParameters {
+    /**
+     * Optional. A filter for the sessions to return in the response.A filter is a logical expression constraining the values of various fields in each session resource. Filters are case sensitive, and may contain multiple clauses combined with logical operators (AND/OR). Supported fields are session_id, session_uuid, state, and create_time.e.g. state = ACTIVE and create_time < "2023-01-01T00:00:00Z" filters for sessions in state ACTIVE that were created before 2023-01-01See https://google.aip.dev/assets/misc/ebnf-filtering.txt for a detailed description of the filter syntax and a list of supported comparisons.
+     */
+    filter?: string;
+    /**
+     * Optional. The maximum number of sessions to return in each response. The service may return fewer than this value.
+     */
+    pageSize?: number;
+    /**
+     * Optional. A page token received from a previous ListSessions call. Provide this token to retrieve the subsequent page.
+     */
+    pageToken?: string;
+    /**
+     * Required. The parent, which owns this collection of sessions.
+     */
+    parent?: string;
+  }
+  export interface Params$Resource$Projects$Locations$Sessions$Terminate
+    extends StandardParameters {
+    /**
+     * Required. The name of the session resource to terminate.
+     */
+    name?: string;
+
+    /**
+     * Request body metadata
+     */
+    requestBody?: Schema$TerminateSessionRequest;
+  }
+
+  export class Resource$Projects$Locations$Sessiontemplates {
+    context: APIRequestContext;
+    constructor(context: APIRequestContext) {
+      this.context = context;
+    }
+
+    /**
+     * Create an session template, synchronously.
+     *
+     * @param params - Parameters for request
+     * @param options - Optionally override request options, such as `url`, `method`, and `encoding`.
+     * @param callback - Optional callback that handles the response.
+     * @returns A promise if used with async/await, or void if used with a callback.
+     */
+    create(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Create,
+      options: StreamMethodOptions
+    ): GaxiosPromise<Readable>;
+    create(
+      params?: Params$Resource$Projects$Locations$Sessiontemplates$Create,
+      options?: MethodOptions
+    ): GaxiosPromise<Schema$SessionTemplate>;
+    create(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Create,
+      options: StreamMethodOptions | BodyResponseCallback<Readable>,
+      callback: BodyResponseCallback<Readable>
+    ): void;
+    create(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Create,
+      options: MethodOptions | BodyResponseCallback<Schema$SessionTemplate>,
+      callback: BodyResponseCallback<Schema$SessionTemplate>
+    ): void;
+    create(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Create,
+      callback: BodyResponseCallback<Schema$SessionTemplate>
+    ): void;
+    create(callback: BodyResponseCallback<Schema$SessionTemplate>): void;
+    create(
+      paramsOrCallback?:
+        | Params$Resource$Projects$Locations$Sessiontemplates$Create
+        | BodyResponseCallback<Schema$SessionTemplate>
+        | BodyResponseCallback<Readable>,
+      optionsOrCallback?:
+        | MethodOptions
+        | StreamMethodOptions
+        | BodyResponseCallback<Schema$SessionTemplate>
+        | BodyResponseCallback<Readable>,
+      callback?:
+        | BodyResponseCallback<Schema$SessionTemplate>
+        | BodyResponseCallback<Readable>
+    ): void | GaxiosPromise<Schema$SessionTemplate> | GaxiosPromise<Readable> {
+      let params = (paramsOrCallback ||
+        {}) as Params$Resource$Projects$Locations$Sessiontemplates$Create;
+      let options = (optionsOrCallback || {}) as MethodOptions;
+
+      if (typeof paramsOrCallback === 'function') {
+        callback = paramsOrCallback;
+        params =
+          {} as Params$Resource$Projects$Locations$Sessiontemplates$Create;
+        options = {};
+      }
+
+      if (typeof optionsOrCallback === 'function') {
+        callback = optionsOrCallback;
+        options = {};
+      }
+
+      const rootUrl = options.rootUrl || 'https://dataproc.googleapis.com/';
+      const parameters = {
+        options: Object.assign(
+          {
+            url: (rootUrl + '/v1/{+parent}/sessionTemplates').replace(
+              /([^:]\/)\/+/g,
+              '$1'
+            ),
+            method: 'POST',
+          },
+          options
+        ),
+        params,
+        requiredParams: ['parent'],
+        pathParams: ['parent'],
+        context: this.context,
+      };
+      if (callback) {
+        createAPIRequest<Schema$SessionTemplate>(
+          parameters,
+          callback as BodyResponseCallback<unknown>
+        );
+      } else {
+        return createAPIRequest<Schema$SessionTemplate>(parameters);
+      }
+    }
+
+    /**
+     * Deletes a session template.
+     *
+     * @param params - Parameters for request
+     * @param options - Optionally override request options, such as `url`, `method`, and `encoding`.
+     * @param callback - Optional callback that handles the response.
+     * @returns A promise if used with async/await, or void if used with a callback.
+     */
+    delete(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Delete,
+      options: StreamMethodOptions
+    ): GaxiosPromise<Readable>;
+    delete(
+      params?: Params$Resource$Projects$Locations$Sessiontemplates$Delete,
+      options?: MethodOptions
+    ): GaxiosPromise<Schema$Empty>;
+    delete(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Delete,
+      options: StreamMethodOptions | BodyResponseCallback<Readable>,
+      callback: BodyResponseCallback<Readable>
+    ): void;
+    delete(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Delete,
+      options: MethodOptions | BodyResponseCallback<Schema$Empty>,
+      callback: BodyResponseCallback<Schema$Empty>
+    ): void;
+    delete(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Delete,
+      callback: BodyResponseCallback<Schema$Empty>
+    ): void;
+    delete(callback: BodyResponseCallback<Schema$Empty>): void;
+    delete(
+      paramsOrCallback?:
+        | Params$Resource$Projects$Locations$Sessiontemplates$Delete
+        | BodyResponseCallback<Schema$Empty>
+        | BodyResponseCallback<Readable>,
+      optionsOrCallback?:
+        | MethodOptions
+        | StreamMethodOptions
+        | BodyResponseCallback<Schema$Empty>
+        | BodyResponseCallback<Readable>,
+      callback?:
+        | BodyResponseCallback<Schema$Empty>
+        | BodyResponseCallback<Readable>
+    ): void | GaxiosPromise<Schema$Empty> | GaxiosPromise<Readable> {
+      let params = (paramsOrCallback ||
+        {}) as Params$Resource$Projects$Locations$Sessiontemplates$Delete;
+      let options = (optionsOrCallback || {}) as MethodOptions;
+
+      if (typeof paramsOrCallback === 'function') {
+        callback = paramsOrCallback;
+        params =
+          {} as Params$Resource$Projects$Locations$Sessiontemplates$Delete;
+        options = {};
+      }
+
+      if (typeof optionsOrCallback === 'function') {
+        callback = optionsOrCallback;
+        options = {};
+      }
+
+      const rootUrl = options.rootUrl || 'https://dataproc.googleapis.com/';
+      const parameters = {
+        options: Object.assign(
+          {
+            url: (rootUrl + '/v1/{+name}').replace(/([^:]\/)\/+/g, '$1'),
+            method: 'DELETE',
+          },
+          options
+        ),
+        params,
+        requiredParams: ['name'],
+        pathParams: ['name'],
+        context: this.context,
+      };
+      if (callback) {
+        createAPIRequest<Schema$Empty>(
+          parameters,
+          callback as BodyResponseCallback<unknown>
+        );
+      } else {
+        return createAPIRequest<Schema$Empty>(parameters);
+      }
+    }
+
+    /**
+     * Gets the resource representation for a session template.
+     *
+     * @param params - Parameters for request
+     * @param options - Optionally override request options, such as `url`, `method`, and `encoding`.
+     * @param callback - Optional callback that handles the response.
+     * @returns A promise if used with async/await, or void if used with a callback.
+     */
+    get(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Get,
+      options: StreamMethodOptions
+    ): GaxiosPromise<Readable>;
+    get(
+      params?: Params$Resource$Projects$Locations$Sessiontemplates$Get,
+      options?: MethodOptions
+    ): GaxiosPromise<Schema$SessionTemplate>;
+    get(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Get,
+      options: StreamMethodOptions | BodyResponseCallback<Readable>,
+      callback: BodyResponseCallback<Readable>
+    ): void;
+    get(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Get,
+      options: MethodOptions | BodyResponseCallback<Schema$SessionTemplate>,
+      callback: BodyResponseCallback<Schema$SessionTemplate>
+    ): void;
+    get(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Get,
+      callback: BodyResponseCallback<Schema$SessionTemplate>
+    ): void;
+    get(callback: BodyResponseCallback<Schema$SessionTemplate>): void;
+    get(
+      paramsOrCallback?:
+        | Params$Resource$Projects$Locations$Sessiontemplates$Get
+        | BodyResponseCallback<Schema$SessionTemplate>
+        | BodyResponseCallback<Readable>,
+      optionsOrCallback?:
+        | MethodOptions
+        | StreamMethodOptions
+        | BodyResponseCallback<Schema$SessionTemplate>
+        | BodyResponseCallback<Readable>,
+      callback?:
+        | BodyResponseCallback<Schema$SessionTemplate>
+        | BodyResponseCallback<Readable>
+    ): void | GaxiosPromise<Schema$SessionTemplate> | GaxiosPromise<Readable> {
+      let params = (paramsOrCallback ||
+        {}) as Params$Resource$Projects$Locations$Sessiontemplates$Get;
+      let options = (optionsOrCallback || {}) as MethodOptions;
+
+      if (typeof paramsOrCallback === 'function') {
+        callback = paramsOrCallback;
+        params = {} as Params$Resource$Projects$Locations$Sessiontemplates$Get;
+        options = {};
+      }
+
+      if (typeof optionsOrCallback === 'function') {
+        callback = optionsOrCallback;
+        options = {};
+      }
+
+      const rootUrl = options.rootUrl || 'https://dataproc.googleapis.com/';
+      const parameters = {
+        options: Object.assign(
+          {
+            url: (rootUrl + '/v1/{+name}').replace(/([^:]\/)\/+/g, '$1'),
+            method: 'GET',
+          },
+          options
+        ),
+        params,
+        requiredParams: ['name'],
+        pathParams: ['name'],
+        context: this.context,
+      };
+      if (callback) {
+        createAPIRequest<Schema$SessionTemplate>(
+          parameters,
+          callback as BodyResponseCallback<unknown>
+        );
+      } else {
+        return createAPIRequest<Schema$SessionTemplate>(parameters);
+      }
+    }
+
+    /**
+     * Lists session templates.
+     *
+     * @param params - Parameters for request
+     * @param options - Optionally override request options, such as `url`, `method`, and `encoding`.
+     * @param callback - Optional callback that handles the response.
+     * @returns A promise if used with async/await, or void if used with a callback.
+     */
+    list(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$List,
+      options: StreamMethodOptions
+    ): GaxiosPromise<Readable>;
+    list(
+      params?: Params$Resource$Projects$Locations$Sessiontemplates$List,
+      options?: MethodOptions
+    ): GaxiosPromise<Schema$ListSessionTemplatesResponse>;
+    list(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$List,
+      options: StreamMethodOptions | BodyResponseCallback<Readable>,
+      callback: BodyResponseCallback<Readable>
+    ): void;
+    list(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$List,
+      options:
+        | MethodOptions
+        | BodyResponseCallback<Schema$ListSessionTemplatesResponse>,
+      callback: BodyResponseCallback<Schema$ListSessionTemplatesResponse>
+    ): void;
+    list(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$List,
+      callback: BodyResponseCallback<Schema$ListSessionTemplatesResponse>
+    ): void;
+    list(
+      callback: BodyResponseCallback<Schema$ListSessionTemplatesResponse>
+    ): void;
+    list(
+      paramsOrCallback?:
+        | Params$Resource$Projects$Locations$Sessiontemplates$List
+        | BodyResponseCallback<Schema$ListSessionTemplatesResponse>
+        | BodyResponseCallback<Readable>,
+      optionsOrCallback?:
+        | MethodOptions
+        | StreamMethodOptions
+        | BodyResponseCallback<Schema$ListSessionTemplatesResponse>
+        | BodyResponseCallback<Readable>,
+      callback?:
+        | BodyResponseCallback<Schema$ListSessionTemplatesResponse>
+        | BodyResponseCallback<Readable>
+    ):
+      | void
+      | GaxiosPromise<Schema$ListSessionTemplatesResponse>
+      | GaxiosPromise<Readable> {
+      let params = (paramsOrCallback ||
+        {}) as Params$Resource$Projects$Locations$Sessiontemplates$List;
+      let options = (optionsOrCallback || {}) as MethodOptions;
+
+      if (typeof paramsOrCallback === 'function') {
+        callback = paramsOrCallback;
+        params = {} as Params$Resource$Projects$Locations$Sessiontemplates$List;
+        options = {};
+      }
+
+      if (typeof optionsOrCallback === 'function') {
+        callback = optionsOrCallback;
+        options = {};
+      }
+
+      const rootUrl = options.rootUrl || 'https://dataproc.googleapis.com/';
+      const parameters = {
+        options: Object.assign(
+          {
+            url: (rootUrl + '/v1/{+parent}/sessionTemplates').replace(
+              /([^:]\/)\/+/g,
+              '$1'
+            ),
+            method: 'GET',
+          },
+          options
+        ),
+        params,
+        requiredParams: ['parent'],
+        pathParams: ['parent'],
+        context: this.context,
+      };
+      if (callback) {
+        createAPIRequest<Schema$ListSessionTemplatesResponse>(
+          parameters,
+          callback as BodyResponseCallback<unknown>
+        );
+      } else {
+        return createAPIRequest<Schema$ListSessionTemplatesResponse>(
+          parameters
+        );
+      }
+    }
+
+    /**
+     * Updates the session template, synchronously.Disable check for update_mask, because all updates will be full replacements.
+     *
+     * @param params - Parameters for request
+     * @param options - Optionally override request options, such as `url`, `method`, and `encoding`.
+     * @param callback - Optional callback that handles the response.
+     * @returns A promise if used with async/await, or void if used with a callback.
+     */
+    patch(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Patch,
+      options: StreamMethodOptions
+    ): GaxiosPromise<Readable>;
+    patch(
+      params?: Params$Resource$Projects$Locations$Sessiontemplates$Patch,
+      options?: MethodOptions
+    ): GaxiosPromise<Schema$SessionTemplate>;
+    patch(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Patch,
+      options: StreamMethodOptions | BodyResponseCallback<Readable>,
+      callback: BodyResponseCallback<Readable>
+    ): void;
+    patch(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Patch,
+      options: MethodOptions | BodyResponseCallback<Schema$SessionTemplate>,
+      callback: BodyResponseCallback<Schema$SessionTemplate>
+    ): void;
+    patch(
+      params: Params$Resource$Projects$Locations$Sessiontemplates$Patch,
+      callback: BodyResponseCallback<Schema$SessionTemplate>
+    ): void;
+    patch(callback: BodyResponseCallback<Schema$SessionTemplate>): void;
+    patch(
+      paramsOrCallback?:
+        | Params$Resource$Projects$Locations$Sessiontemplates$Patch
+        | BodyResponseCallback<Schema$SessionTemplate>
+        | BodyResponseCallback<Readable>,
+      optionsOrCallback?:
+        | MethodOptions
+        | StreamMethodOptions
+        | BodyResponseCallback<Schema$SessionTemplate>
+        | BodyResponseCallback<Readable>,
+      callback?:
+        | BodyResponseCallback<Schema$SessionTemplate>
+        | BodyResponseCallback<Readable>
+    ): void | GaxiosPromise<Schema$SessionTemplate> | GaxiosPromise<Readable> {
+      let params = (paramsOrCallback ||
+        {}) as Params$Resource$Projects$Locations$Sessiontemplates$Patch;
+      let options = (optionsOrCallback || {}) as MethodOptions;
+
+      if (typeof paramsOrCallback === 'function') {
+        callback = paramsOrCallback;
+        params =
+          {} as Params$Resource$Projects$Locations$Sessiontemplates$Patch;
+        options = {};
+      }
+
+      if (typeof optionsOrCallback === 'function') {
+        callback = optionsOrCallback;
+        options = {};
+      }
+
+      const rootUrl = options.rootUrl || 'https://dataproc.googleapis.com/';
+      const parameters = {
+        options: Object.assign(
+          {
+            url: (rootUrl + '/v1/{+name}').replace(/([^:]\/)\/+/g, '$1'),
+            method: 'PATCH',
+          },
+          options
+        ),
+        params,
+        requiredParams: ['name'],
+        pathParams: ['name'],
+        context: this.context,
+      };
+      if (callback) {
+        createAPIRequest<Schema$SessionTemplate>(
+          parameters,
+          callback as BodyResponseCallback<unknown>
+        );
+      } else {
+        return createAPIRequest<Schema$SessionTemplate>(parameters);
+      }
+    }
+  }
+
+  export interface Params$Resource$Projects$Locations$Sessiontemplates$Create
+    extends StandardParameters {
+    /**
+     * Required. The parent resource where this session template will be created.
+     */
+    parent?: string;
+
+    /**
+     * Request body metadata
+     */
+    requestBody?: Schema$SessionTemplate;
+  }
+  export interface Params$Resource$Projects$Locations$Sessiontemplates$Delete
+    extends StandardParameters {
+    /**
+     * Required. The name of the session template resource to delete.
+     */
+    name?: string;
+  }
+  export interface Params$Resource$Projects$Locations$Sessiontemplates$Get
+    extends StandardParameters {
+    /**
+     * Required. The name of the session template to retrieve.
+     */
+    name?: string;
+  }
+  export interface Params$Resource$Projects$Locations$Sessiontemplates$List
+    extends StandardParameters {
+    /**
+     * Optional. A filter for the session templates to return in the response. Filters are case sensitive and have the following syntax:field = value AND field = value ...
+     */
+    filter?: string;
+    /**
+     * Optional. The maximum number of sessions to return in each response. The service may return fewer than this value.
+     */
+    pageSize?: number;
+    /**
+     * Optional. A page token received from a previous ListSessions call. Provide this token to retrieve the subsequent page.
+     */
+    pageToken?: string;
+    /**
+     * Required. The parent, which owns this collection of session templates.
+     */
+    parent?: string;
+  }
+  export interface Params$Resource$Projects$Locations$Sessiontemplates$Patch
+    extends StandardParameters {
+    /**
+     * Required. The resource name of the session template.
+     */
+    name?: string;
+
+    /**
+     * Request body metadata
+     */
+    requestBody?: Schema$SessionTemplate;
   }
 
   export class Resource$Projects$Locations$Workflowtemplates {
