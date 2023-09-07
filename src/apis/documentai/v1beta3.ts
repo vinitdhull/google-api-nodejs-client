@@ -228,6 +228,33 @@ export namespace documentai_v1beta3 {
    * Response of the batch move documents operation.
    */
   export interface Schema$GoogleCloudDocumentaiUiv1beta3BatchMoveDocumentsResponse {}
+  export interface Schema$GoogleCloudDocumentaiUiv1beta3BatchUpdateDocumentsMetadata {
+    /**
+     * The basic metadata of the long-running operation.
+     */
+    commonMetadata?: Schema$GoogleCloudDocumentaiUiv1beta3CommonOperationMetadata;
+    /**
+     * The list of response details of each document.
+     */
+    individualBatchUpdateStatuses?: Schema$GoogleCloudDocumentaiUiv1beta3BatchUpdateDocumentsMetadataIndividualBatchUpdateStatus[];
+  }
+  /**
+   * The status of each individual document in the batch update process.
+   */
+  export interface Schema$GoogleCloudDocumentaiUiv1beta3BatchUpdateDocumentsMetadataIndividualBatchUpdateStatus {
+    /**
+     * The document id of the document.
+     */
+    documentId?: Schema$GoogleCloudDocumentaiUiv1beta3DocumentId;
+    /**
+     * The status of updating the document in storage.
+     */
+    status?: Schema$GoogleRpcStatus;
+  }
+  /**
+   * Response of the batch update documents operation.
+   */
+  export interface Schema$GoogleCloudDocumentaiUiv1beta3BatchUpdateDocumentsResponse {}
   /**
    * The common metadata for long running operations.
    */
@@ -4436,6 +4463,15 @@ export namespace documentai_v1beta3 {
     processorTypes?: Schema$GoogleCloudDocumentaiV1beta3ProcessorType[];
   }
   /**
+   * Metadata for how this field value is extracted.
+   */
+  export interface Schema$GoogleCloudDocumentaiV1beta3FieldExtractionMetadata {
+    /**
+     * Summary options config.
+     */
+    summaryOptions?: Schema$GoogleCloudDocumentaiV1beta3SummaryOptions;
+  }
+  /**
    * Specifies a document stored on Cloud Storage.
    */
   export interface Schema$GoogleCloudDocumentaiV1beta3GcsDocument {
@@ -4728,6 +4764,10 @@ export namespace documentai_v1beta3 {
      * Only applicable to `OCR_PROCESSOR`. Returns error if set on other processor types.
      */
     ocrConfig?: Schema$GoogleCloudDocumentaiV1beta3OcrConfig;
+    /**
+     * Optional. Override the schema of the ProcessorVersion. Will return an Invalid Argument error if this field is set when the underlying ProcessorVersion doesn't support schema override.
+     */
+    schemaOverride?: Schema$GoogleCloudDocumentaiV1beta3DocumentSchema;
   }
   /**
    * The first-class citizen for Document AI. Each processor defines how to extract structural information from a document.
@@ -4938,6 +4978,10 @@ export namespace documentai_v1beta3 {
    */
   export interface Schema$GoogleCloudDocumentaiV1beta3PropertyMetadata {
     /**
+     * Field extraction metadata on the property.
+     */
+    fieldExtractionMetadata?: Schema$GoogleCloudDocumentaiV1beta3FieldExtractionMetadata;
+    /**
      * Whether the property should be considered as "inactive".
      */
     inactive?: boolean | null;
@@ -5069,6 +5113,19 @@ export namespace documentai_v1beta3 {
    * Response message for the SetDefaultProcessorVersion method.
    */
   export interface Schema$GoogleCloudDocumentaiV1beta3SetDefaultProcessorVersionResponse {}
+  /**
+   * Metadata for document summarization.
+   */
+  export interface Schema$GoogleCloudDocumentaiV1beta3SummaryOptions {
+    /**
+     * What format the summary should be in.
+     */
+    format?: string | null;
+    /**
+     * How long the summary should be.
+     */
+    length?: string | null;
+  }
   /**
    * The metadata that represents a processor version being created.
    */
