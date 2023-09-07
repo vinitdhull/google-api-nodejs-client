@@ -460,6 +460,10 @@ export namespace networkmanagement_v1 {
      */
     protocol?: string | null;
     /**
+     * URI of the source telemetry agent this packet originates from.
+     */
+    sourceAgentUri?: string | null;
+    /**
      * Source IP address.
      */
     sourceIp?: string | null;
