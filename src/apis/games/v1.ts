@@ -2307,7 +2307,7 @@ export namespace games_v1 {
      */
     requestId?: string;
     /**
-     * The number of steps to increment.
+     * Required. The number of steps to increment.
      */
     stepsToIncrement?: number;
   }
@@ -2348,7 +2348,7 @@ export namespace games_v1 {
      */
     achievementId?: string;
     /**
-     * The minimum value to set the steps to.
+     * Required. The minimum value to set the steps to.
      */
     steps?: number;
   }
@@ -4013,7 +4013,7 @@ export namespace games_v1 {
 
   export interface Params$Resource$Revisions$Check extends StandardParameters {
     /**
-     * The revision of the client SDK used by your application. Format: `[PLATFORM_TYPE]:[VERSION_NUMBER]`. Possible values of `PLATFORM_TYPE` are: * `ANDROID` - Client is running the Android SDK. * `IOS` - Client is running the iOS SDK. * `WEB_APP` - Client is running as a Web App.
+     * Required. The revision of the client SDK used by your application. Format: `[PLATFORM_TYPE]:[VERSION_NUMBER]`. Possible values of `PLATFORM_TYPE` are: * `ANDROID` - Client is running the Android SDK. * `IOS` - Client is running the iOS SDK. * `WEB_APP` - Client is running as a Web App.
      */
     clientRevision?: string;
   }
@@ -4533,7 +4533,7 @@ export namespace games_v1 {
      */
     pageToken?: string;
     /**
-     * The time span for the scores and ranks you're requesting.
+     * Required. The time span for the scores and ranks you're requesting.
      */
     timeSpan?: string;
   }
@@ -4568,7 +4568,7 @@ export namespace games_v1 {
      */
     returnTopIfAbsent?: boolean;
     /**
-     * The time span for the scores and ranks you're requesting.
+     * Required. The time span for the scores and ranks you're requesting.
      */
     timeSpan?: string;
   }
@@ -4582,7 +4582,7 @@ export namespace games_v1 {
      */
     leaderboardId?: string;
     /**
-     * The score you're submitting. The submitted score is ignored if it is worse than a previously submitted score, where worse depends on the leaderboard sort order. The meaning of the score value depends on the leaderboard format type. For fixed-point, the score represents the raw value. For time, the score represents elapsed time in milliseconds. For currency, the score represents a value in micro units.
+     * Required. The score you're submitting. The submitted score is ignored if it is worse than a previously submitted score, where worse depends on the leaderboard sort order. The meaning of the score value depends on the leaderboard format type. For fixed-point, the score represents the raw value. For time, the score represents elapsed time in milliseconds. For currency, the score represents a value in micro units.
      */
     score?: string;
     /**
