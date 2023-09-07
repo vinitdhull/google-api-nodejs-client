@@ -302,6 +302,19 @@ export namespace dialogflow_v2 {
     version?: string | null;
   }
   /**
+   * A data store connection. It represents a data store in Discovery Engine and the type of the contents it contains.
+   */
+  export interface Schema$GoogleCloudDialogflowCxV3beta1DataStoreConnection {
+    /**
+     * The full name of the referenced data store. Formats: `projects/{project\}/locations/{location\}/collections/{collection\}/dataStores/{data_store\}` `projects/{project\}/locations/{location\}/dataStores/{data_store\}`
+     */
+    dataStore?: string | null;
+    /**
+     * The type of the connected data store.
+     */
+    dataStoreType?: string | null;
+  }
+  /**
    * Metadata for DeleteDocument operation.
    */
   export interface Schema$GoogleCloudDialogflowCxV3beta1DeleteDocumentOperationMetadata {
@@ -811,6 +824,31 @@ export namespace dialogflow_v2 {
     text?: string | null;
   }
   /**
+   * The Knowledge Connector settings for this page or flow. This includes information such as the attached Knowledge Bases, and the way to execute fulfillment.
+   */
+  export interface Schema$GoogleCloudDialogflowCxV3beta1KnowledgeConnectorSettings {
+    /**
+     * Optional. List of related data store connections.
+     */
+    dataStoreConnections?: Schema$GoogleCloudDialogflowCxV3beta1DataStoreConnection[];
+    /**
+     * Whether Knowledge Connector is enabled or not.
+     */
+    enabled?: boolean | null;
+    /**
+     * The target flow to transition to. Format: `projects//locations//agents//flows/`.
+     */
+    targetFlow?: string | null;
+    /**
+     * The target page to transition to. Format: `projects//locations//agents//flows//pages/`.
+     */
+    targetPage?: string | null;
+    /**
+     * The fulfillment to be triggered. When the answers from the Knowledge Connector are selected by Dialogflow, you can utitlize the request scoped parameter `$request.knowledge.answers` (contains up to the 5 highest confidence answers) and `$request.knowledge.questions` (contains the corresponding questions) to construct the fulfillment.
+     */
+    triggerFulfillment?: Schema$GoogleCloudDialogflowCxV3beta1Fulfillment;
+  }
+  /**
    * A Dialogflow CX conversation (session) can be described and visualized as a state machine. The states of a CX session are represented by pages. For each flow, you define many pages, where your combined pages can handle a complete conversation on the topics the flow is designed for. At any given moment, exactly one page is the current page, the current page is considered active, and the flow associated with that page is considered active. Every flow has a special start page. When a flow initially becomes active, the start page page becomes the current page. For each conversational turn, the current page will either stay the same or transition to another page. You configure each page to collect information from the end-user that is relevant for the conversational state represented by the page. For more information, see the [Page guide](https://cloud.google.com/dialogflow/cx/docs/concept/page).
    */
   export interface Schema$GoogleCloudDialogflowCxV3beta1Page {
@@ -831,11 +869,15 @@ export namespace dialogflow_v2 {
      */
     form?: Schema$GoogleCloudDialogflowCxV3beta1Form;
     /**
+     * Optional. Knowledge connector configuration.
+     */
+    knowledgeConnectorSettings?: Schema$GoogleCloudDialogflowCxV3beta1KnowledgeConnectorSettings;
+    /**
      * The unique identifier of the page. Required for the Pages.UpdatePage method. Pages.CreatePage populates the name automatically. Format: `projects//locations//agents//flows//pages/`.
      */
     name?: string | null;
     /**
-     * Ordered list of `TransitionRouteGroups` associated with the page. Transition route groups must be unique within a page. * If multiple transition routes within a page scope refer to the same intent, then the precedence order is: page's transition route -\> page's transition route group -\> flow's transition routes. * If multiple transition route groups within a page contain the same intent, then the first group in the ordered list takes precedence. Format:`projects//locations//agents//flows//transitionRouteGroups/` or `projects//locations//agents//transitionRouteGroups/` for agent-level groups.
+     * Ordered list of `TransitionRouteGroups` added to the page. Transition route groups must be unique within a page. If the page links both flow-level transition route groups and agent-level transition route groups, the flow-level ones will have higher priority and will be put before the agent-level ones. * If multiple transition routes within a page scope refer to the same intent, then the precedence order is: page's transition route -\> page's transition route group -\> flow's transition routes. * If multiple transition route groups within a page contain the same intent, then the first group in the ordered list takes precedence. Format:`projects//locations//agents//flows//transitionRouteGroups/` or `projects//locations//agents//transitionRouteGroups/` for agent-level groups.
      */
     transitionRouteGroups?: string[] | null;
     /**
@@ -949,6 +991,10 @@ export namespace dialogflow_v2 {
      */
     endInteraction?: Schema$GoogleCloudDialogflowCxV3beta1ResponseMessageEndInteraction;
     /**
+     * Represents info card for knowledge answers, to be better rendered in Dialogflow Messenger.
+     */
+    knowledgeInfoCard?: Schema$GoogleCloudDialogflowCxV3beta1ResponseMessageKnowledgeInfoCard;
+    /**
      * Hands off conversation to a human agent.
      */
     liveAgentHandoff?: Schema$GoogleCloudDialogflowCxV3beta1ResponseMessageLiveAgentHandoff;
@@ -990,6 +1036,10 @@ export namespace dialogflow_v2 {
    * Indicates that interaction with the Dialogflow agent has ended. This message is generated by Dialogflow only and not supposed to be defined by the user.
    */
   export interface Schema$GoogleCloudDialogflowCxV3beta1ResponseMessageEndInteraction {}
+  /**
+   * Represents info card response. If the response contains generative knowledge prediction, Dialogflow will return a payload with Infobot Messenger compatible info card. Otherwise, the info card response is skipped.
+   */
+  export interface Schema$GoogleCloudDialogflowCxV3beta1ResponseMessageKnowledgeInfoCard {}
   /**
    * Indicates that the conversation should be handed off to a live agent. Dialogflow only uses this to determine which conversations were handed off to a human agent for measurement purposes. What else to do with this signal is up to you and your handoff procedures. You may set this, for example: * In the entry_fulfillment of a Page if entering the page indicates something went extremely wrong in the conversation. * In a webhook response when you determine that the customer issue can only be handled by a human.
    */
@@ -1260,6 +1310,10 @@ export namespace dialogflow_v2 {
      * The condition to evaluate against form parameters or session parameters. See the [conditions reference](https://cloud.google.com/dialogflow/cx/docs/reference/condition). At least one of `intent` or `condition` must be specified. When both `intent` and `condition` are specified, the transition can only happen when both are fulfilled.
      */
     condition?: string | null;
+    /**
+     * Optional. The description of the transition route. The maximum length is 500 characters.
+     */
+    description?: string | null;
     /**
      * The unique identifier of an Intent. Format: `projects//locations//agents//intents/`. Indicates that the transition can only happen when the given intent is matched. At least one of `intent` or `condition` must be specified. When both `intent` and `condition` are specified, the transition can only happen when both are fulfilled.
      */
@@ -1695,6 +1749,19 @@ export namespace dialogflow_v2 {
      * Name of the created version. Format: `projects//locations//agents//flows//versions/`.
      */
     version?: string | null;
+  }
+  /**
+   * A data store connection. It represents a data store in Discovery Engine and the type of the contents it contains.
+   */
+  export interface Schema$GoogleCloudDialogflowCxV3DataStoreConnection {
+    /**
+     * The full name of the referenced data store. Formats: `projects/{project\}/locations/{location\}/collections/{collection\}/dataStores/{data_store\}` `projects/{project\}/locations/{location\}/dataStores/{data_store\}`
+     */
+    dataStore?: string | null;
+    /**
+     * The type of the connected data store.
+     */
+    dataStoreType?: string | null;
   }
   /**
    * Metadata for DeleteDocument operation.
@@ -2206,6 +2273,31 @@ export namespace dialogflow_v2 {
     text?: string | null;
   }
   /**
+   * The Knowledge Connector settings for this page or flow. This includes information such as the attached Knowledge Bases, and the way to execute fulfillment.
+   */
+  export interface Schema$GoogleCloudDialogflowCxV3KnowledgeConnectorSettings {
+    /**
+     * Optional. List of related data store connections.
+     */
+    dataStoreConnections?: Schema$GoogleCloudDialogflowCxV3DataStoreConnection[];
+    /**
+     * Whether Knowledge Connector is enabled or not.
+     */
+    enabled?: boolean | null;
+    /**
+     * The target flow to transition to. Format: `projects//locations//agents//flows/`.
+     */
+    targetFlow?: string | null;
+    /**
+     * The target page to transition to. Format: `projects//locations//agents//flows//pages/`.
+     */
+    targetPage?: string | null;
+    /**
+     * The fulfillment to be triggered. When the answers from the Knowledge Connector are selected by Dialogflow, you can utitlize the request scoped parameter `$request.knowledge.answers` (contains up to the 5 highest confidence answers) and `$request.knowledge.questions` (contains the corresponding questions) to construct the fulfillment.
+     */
+    triggerFulfillment?: Schema$GoogleCloudDialogflowCxV3Fulfillment;
+  }
+  /**
    * A Dialogflow CX conversation (session) can be described and visualized as a state machine. The states of a CX session are represented by pages. For each flow, you define many pages, where your combined pages can handle a complete conversation on the topics the flow is designed for. At any given moment, exactly one page is the current page, the current page is considered active, and the flow associated with that page is considered active. Every flow has a special start page. When a flow initially becomes active, the start page page becomes the current page. For each conversational turn, the current page will either stay the same or transition to another page. You configure each page to collect information from the end-user that is relevant for the conversational state represented by the page. For more information, see the [Page guide](https://cloud.google.com/dialogflow/cx/docs/concept/page).
    */
   export interface Schema$GoogleCloudDialogflowCxV3Page {
@@ -2226,11 +2318,15 @@ export namespace dialogflow_v2 {
      */
     form?: Schema$GoogleCloudDialogflowCxV3Form;
     /**
+     * Optional. Knowledge connector configuration.
+     */
+    knowledgeConnectorSettings?: Schema$GoogleCloudDialogflowCxV3KnowledgeConnectorSettings;
+    /**
      * The unique identifier of the page. Required for the Pages.UpdatePage method. Pages.CreatePage populates the name automatically. Format: `projects//locations//agents//flows//pages/`.
      */
     name?: string | null;
     /**
-     * Ordered list of `TransitionRouteGroups` associated with the page. Transition route groups must be unique within a page. * If multiple transition routes within a page scope refer to the same intent, then the precedence order is: page's transition route -\> page's transition route group -\> flow's transition routes. * If multiple transition route groups within a page contain the same intent, then the first group in the ordered list takes precedence. Format:`projects//locations//agents//flows//transitionRouteGroups/` or `projects//locations//agents//transitionRouteGroups/` for agent-level groups.
+     * Ordered list of `TransitionRouteGroups` added to the page. Transition route groups must be unique within a page. If the page links both flow-level transition route groups and agent-level transition route groups, the flow-level ones will have higher priority and will be put before the agent-level ones. * If multiple transition routes within a page scope refer to the same intent, then the precedence order is: page's transition route -\> page's transition route group -\> flow's transition routes. * If multiple transition route groups within a page contain the same intent, then the first group in the ordered list takes precedence. Format:`projects//locations//agents//flows//transitionRouteGroups/` or `projects//locations//agents//transitionRouteGroups/` for agent-level groups.
      */
     transitionRouteGroups?: string[] | null;
     /**
@@ -2344,6 +2440,10 @@ export namespace dialogflow_v2 {
      */
     endInteraction?: Schema$GoogleCloudDialogflowCxV3ResponseMessageEndInteraction;
     /**
+     * Represents info card for knowledge answers, to be better rendered in Dialogflow Messenger.
+     */
+    knowledgeInfoCard?: Schema$GoogleCloudDialogflowCxV3ResponseMessageKnowledgeInfoCard;
+    /**
      * Hands off conversation to a human agent.
      */
     liveAgentHandoff?: Schema$GoogleCloudDialogflowCxV3ResponseMessageLiveAgentHandoff;
@@ -2389,6 +2489,10 @@ export namespace dialogflow_v2 {
    * Indicates that interaction with the Dialogflow agent has ended. This message is generated by Dialogflow only and not supposed to be defined by the user.
    */
   export interface Schema$GoogleCloudDialogflowCxV3ResponseMessageEndInteraction {}
+  /**
+   * Represents info card response. If the response contains generative knowledge prediction, Dialogflow will return a payload with Infobot Messenger compatible info card. Otherwise, the info card response is skipped.
+   */
+  export interface Schema$GoogleCloudDialogflowCxV3ResponseMessageKnowledgeInfoCard {}
   /**
    * Indicates that the conversation should be handed off to a live agent. Dialogflow only uses this to determine which conversations were handed off to a human agent for measurement purposes. What else to do with this signal is up to you and your handoff procedures. You may set this, for example: * In the entry_fulfillment of a Page if entering the page indicates something went extremely wrong in the conversation. * In a webhook response when you determine that the customer issue can only be handled by a human.
    */
@@ -2659,6 +2763,10 @@ export namespace dialogflow_v2 {
      * The condition to evaluate against form parameters or session parameters. See the [conditions reference](https://cloud.google.com/dialogflow/cx/docs/reference/condition). At least one of `intent` or `condition` must be specified. When both `intent` and `condition` are specified, the transition can only happen when both are fulfilled.
      */
     condition?: string | null;
+    /**
+     * Optional. The description of the transition route. The maximum length is 500 characters.
+     */
+    description?: string | null;
     /**
      * The unique identifier of an Intent. Format: `projects//locations//agents//intents/`. Indicates that the transition can only happen when the given intent is matched. At least one of `intent` or `condition` must be specified. When both `intent` and `condition` are specified, the transition can only happen when both are fulfilled.
      */
@@ -5893,6 +6001,10 @@ export namespace dialogflow_v2 {
    */
   export interface Schema$GoogleCloudDialogflowV2GenerateStatelessSummaryResponseSummary {
     /**
+     * The baseline model version used to generate this summary. It is empty if a baseline model was not used to generate this summary.
+     */
+    baselineModelVersion?: string | null;
+    /**
      * The summary content that is concatenated into one string.
      */
     text?: string | null;
@@ -7765,6 +7877,10 @@ export namespace dialogflow_v2 {
      * The name of the answer record. Format: "projects//answerRecords/"
      */
     answerRecord?: string | null;
+    /**
+     * The baseline model version used to generate this summary. It is empty if a baseline model was not used to generate this summary.
+     */
+    baselineModelVersion?: string | null;
     /**
      * The summary content that is concatenated into one string.
      */
