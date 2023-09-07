@@ -380,6 +380,10 @@ export namespace container_v1beta1 {
     upgradeSettings?: Schema$UpgradeSettings;
   }
   /**
+   * Autoscaled rollout policy uses cluster autoscaler during blue-green upgrades to scale both the green and blue pools.
+   */
+  export interface Schema$AutoscaledRolloutPolicy {}
+  /**
    * AutoUpgradeOptions defines the set of options for the user to control how the Auto Upgrades will proceed.
    */
   export interface Schema$AutoUpgradeOptions {
@@ -473,6 +477,10 @@ export namespace container_v1beta1 {
    * Settings for blue-green upgrade.
    */
   export interface Schema$BlueGreenSettings {
+    /**
+     * Autoscaled policy for cluster autoscaler enabled blue-green upgrade.
+     */
+    autoscaledRolloutPolicy?: Schema$AutoscaledRolloutPolicy;
     /**
      * Time needed after draining entire blue pool. After this period, blue pool will be cleaned up.
      */
@@ -3590,6 +3598,14 @@ export namespace container_v1beta1 {
      */
     confidentialNodes?: Schema$ConfidentialNodes;
     /**
+     * Optional. The desired disk size for nodes in the node pool. Initiates an upgrade operation that migrates the nodes in the node pool to the specified disk size.
+     */
+    diskSizeGb?: string | null;
+    /**
+     * Optional. The desired disk type for nodes in the node pool. Initiates an upgrade operation that migrates the nodes in the node pool to the specified disk type.
+     */
+    diskType?: string | null;
+    /**
      * The current etag of the node pool. If an etag is provided and does not match the current etag of the node pool, update will be blocked and an ABORTED error will be returned.
      */
     etag?: string | null;
@@ -3629,6 +3645,10 @@ export namespace container_v1beta1 {
      * Logging configuration.
      */
     loggingConfig?: Schema$NodePoolLoggingConfig;
+    /**
+     * Optional. The desired machine type for nodes in the node pool. Initiates an upgrade operation that migrates the nodes in the node pool to the specified machine type.
+     */
+    machineType?: string | null;
     /**
      * The name (project, location, cluster, node pool) of the node pool to update. Specified in the format `projects/x/locations/x/clusters/x/nodePools/x`.
      */
