@@ -475,6 +475,7 @@ import {
   VERSIONS as playdeveloperreportingVersions,
   playdeveloperreporting,
 } from './playdeveloperreporting';
+import {VERSIONS as playgroupingVersions, playgrouping} from './playgrouping';
 import {
   VERSIONS as playintegrityVersions,
   playintegrity,
@@ -858,6 +859,7 @@ export const APIS: APIList = {
   playablelocations: playablelocationsVersions,
   playcustomapp: playcustomappVersions,
   playdeveloperreporting: playdeveloperreportingVersions,
+  playgrouping: playgroupingVersions,
   playintegrity: playintegrityVersions,
   plus: plusVersions,
   policyanalyzer: policyanalyzerVersions,
@@ -1135,6 +1137,7 @@ export class GeneratedAPIs {
   playablelocations = playablelocations;
   playcustomapp = playcustomapp;
   playdeveloperreporting = playdeveloperreporting;
+  playgrouping = playgrouping;
   playintegrity = playintegrity;
   plus = plus;
   policyanalyzer = policyanalyzer;
