@@ -548,12 +548,7 @@ export namespace discoveryengine_v1beta {
      */
     quotaFailure?: Schema$GoogleCloudDiscoveryengineV1alphaTargetSiteFailureReasonQuotaFailure;
   }
-  export interface Schema$GoogleCloudDiscoveryengineV1alphaTargetSiteFailureReasonQuotaFailure {
-    /**
-     * This number is an estimation on how much total quota this project needs to successfully complete indexing.
-     */
-    totalRequiredQuota?: string | null;
-  }
+  export interface Schema$GoogleCloudDiscoveryengineV1alphaTargetSiteFailureReasonQuotaFailure {}
   /**
    * Metadata for UpdateSchema LRO.
    */
@@ -616,7 +611,7 @@ export namespace discoveryengine_v1beta {
     /**
      * The unique document field paths that serve as the source of this suggestion if it was generated from completable fields. This field is only populated for the document-completable model.
      */
-    completableFieldPath?: string[] | null;
+    completableFieldPaths?: string[] | null;
     /**
      * The suggestion for the query.
      */
@@ -714,6 +709,10 @@ export namespace discoveryengine_v1beta {
      * The resource name of the Serving Config to use. Format: `projects/{project_number\}/locations/{location_id\}/collections/{collection\}/dataStores/{data_store_id\}/servingConfigs/{serving_config_id\}` If this is not set, the default serving config will be used.
      */
     servingConfig?: string | null;
+    /**
+     * A specification for configuring the summary returned in the response.
+     */
+    summarySpec?: Schema$GoogleCloudDiscoveryengineV1betaSearchRequestContentSearchSpecSummarySpec;
     /**
      * The user labels applied to a resource must meet the following requirements: * Each resource can have multiple labels, up to a maximum of 64. * Each label must be a key-value pair. * Keys have a minimum length of 1 character and a maximum length of 63 characters and cannot be empty. Values can be empty and have a maximum length of 63 characters. * Keys and values can contain only lowercase letters, numeric characters, underscores, and dashes. All characters must use UTF-8 encoding, and international characters are allowed. * The key portion of a label must be unique. However, you can use the same key with multiple resources. * Keys must start with a lowercase letter or international character. See [Google Cloud Document](https://cloud.google.com/resource-manager/docs/creating-managing-labels#requirements) for more details.
      */
@@ -1475,6 +1474,14 @@ export namespace discoveryengine_v1beta {
      */
     maxExtractiveSegmentCount?: number | null;
     /**
+     * Return at most `num_next_segments` segments after each selected segments.
+     */
+    numNextSegments?: number | null;
+    /**
+     * Specifies whether to also include the adjacent from each selected segments. Return at most `num_previous_segments` segments before each selected segments.
+     */
+    numPreviousSegments?: number | null;
+    /**
      * Specifies whether to return the confidence score from the extractive segments in each search result. The default value is `false`.
      */
     returnExtractiveSegmentScore?: boolean | null;
@@ -1774,6 +1781,10 @@ export namespace discoveryengine_v1beta {
    */
   export interface Schema$GoogleCloudDiscoveryengineV1betaSearchResponseSummary {
     /**
+     * A collection of Safety Attribute categories and their associated confidence scores.
+     */
+    safetyAttributes?: Schema$GoogleCloudDiscoveryengineV1betaSearchResponseSummarySafetyAttributes;
+    /**
      * Additional summary-skipped reasons. This provides the reason for ignored cases. If nothing is skipped, this field is not set.
      */
     summarySkippedReasons?: string[] | null;
@@ -1781,6 +1792,19 @@ export namespace discoveryengine_v1beta {
      * The summary content.
      */
     summaryText?: string | null;
+  }
+  /**
+   * Safety Attribute categories and their associated confidence scores.
+   */
+  export interface Schema$GoogleCloudDiscoveryengineV1betaSearchResponseSummarySafetyAttributes {
+    /**
+     * The display names of Safety Attribute categories associated with the generated content. Order matches the Scores.
+     */
+    categories?: string[] | null;
+    /**
+     * The confidence scores of the each category, higher value means higher confidence. Order matches the Categories.
+     */
+    scores?: number[] | null;
   }
   /**
    * Defines text input.
